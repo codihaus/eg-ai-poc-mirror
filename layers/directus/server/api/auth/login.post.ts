@@ -8,11 +8,7 @@ import { get } from "lodash-es"
 import { handleErrorsDirectus } from '~/layers/utils/response.utils'
 
 export default defineEventHandler(async (event) => {
-    const runtimeConfig = useRuntimeConfig()
-    const logger = Logger(runtimeConfig.log_level)
     const body = await readBody(event)
-
-    // logger.debug({ body })
 
     const client = get(event.context, 'api_client');
 

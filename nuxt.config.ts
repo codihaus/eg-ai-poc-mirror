@@ -97,7 +97,7 @@ export default defineNuxtConfig({
             crawlLinks: false,
         },
     },
-    debug: false,
+    debug: true,
     imports: {
         dirs: ["*/stores", "./app/common", "./app/composables/**"],
     },

@@ -1,6 +1,5 @@
 import { Logger } from '~/layers/utils/logger.util'
 import { readAssetBlob } from "@directus/sdk"
-import { handleErrorsDirectus } from '~/layers/utils/response.utils'
 
 export default defineEventHandler(async (event) => {
     const runtimeConfig = useRuntimeConfig()
