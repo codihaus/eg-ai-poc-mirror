@@ -31,7 +31,6 @@
 <script setup lang="ts">
 import {computed, ref} from 'vue';
 import {readItems} from "@directus/sdk";
-import {useApi} from "~/composables/api";
 
 const props = defineProps({
 	collection: {
@@ -58,7 +57,8 @@ const props = defineProps({
 
 const totalPages = ref(0)
 
-const api = useApi()
+const {$adminClient} = useNuxtApp();
+const api = $adminClient
 const fetchTotalPages = async () => {
 	const data = await api.request(
 		readItems("pagination", {
