@@ -136,7 +136,7 @@ export default defineNuxtConfig({
             cookie_prefix: process.env.NUXT_COOKIE_PREFIX,
 
             sentry: {
-                dsn:  process.env.SENTRY_DSN ?? 'https://ffaac630523445f18bc7c46cc25a4fef@logs.codihaus.com/13',
+                dsn:  process.env.SENTRY_DSN ?? '',
                 environment:  process.env.SENTRY_ENVIRONMENT ?? 'development',
                 feedback_widget:  process.env.SENTRY_FEEDBACK_WIDGET ?? false,
             }
