@@ -10,10 +10,5 @@ export default [
         path: "/trang/:slug",
         file: "/static",
         alias: ["/en/page/:slug"],
-    },
-    {
-        name: "directus",
-        path: "/directus",
-        file: "/directus"
-    },
+    }
 ]

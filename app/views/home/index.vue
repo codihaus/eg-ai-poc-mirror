@@ -12,10 +12,6 @@
 		<div class="py-5">
 			<pre>{{currentUser}}</pre>
 		</div>
-		<div>
-			<nuxt-link to="/directus">Example Form</nuxt-link>
-		</div>
-
 
 		<div class="flex gap-6">
 			<h3 class="text-lg">Login form</h3>
