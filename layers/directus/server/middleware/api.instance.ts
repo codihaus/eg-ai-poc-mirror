@@ -13,9 +13,16 @@ export default defineEventHandler(async (event) => {
     }
 
     let client = await APIService.getInstance()
+
     if ((get(headers, HEADER_SDK_USER) === HEADER_SDK_USER_VALUE)) {
         client = APIUserService.getInstance(null)
         client.setToken(userAccessToken) //Make sure to set the token
+    }
+
+    if (event.path.startsWith("/api/users"))  {
+        if(!userAccessToken) {
+            throw new Error("Unauthorized")
+        }
     }
 
     set(event.context, 'api_client', client)
