@@ -110,29 +110,15 @@ export default defineNuxtConfig({
     compatibilityDate: '2024-08-23',
     runtimeConfig: {
         log_level: parseInt(<string>process.env.NUXT_LOG_LEVEL) || "debug",
-        sso: {
-            providers: "google",
-            redirect_urls: ""
-        },
         app: {
             environment: process.env.NODE_ENV,
-            captcha: {
-                host: process.env.RECAPTCHA_HOST,
-                site_key: process.env.RECAPTCHA_SITE,
-                secret_key: process.env.RECAPTCHA_SECRET,
-            },
             directus: {
                 auto_fetch_user: true,
                 user_fields: [],
             },
         },
-        captcha: {
-            host: process.env.RECAPTCHA_HOST,
-            secret_key: process.env.RECAPTCHA_SECRET,
-        },
         public: {
             url: process.env.NUXT_PUBLIC_URL,
-            captcha_site_key: process.env.RECAPTCHA_SITE,
             cookie_prefix: process.env.NUXT_COOKIE_PREFIX,
 
             sentry: {

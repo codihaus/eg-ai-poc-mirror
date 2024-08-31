@@ -16,7 +16,6 @@ export default defineEventHandler(async (event) => {
         .login(body.email, body.password, { mode: 'json' })
         .catch((e: any) => handleErrorsDirectus(e, ErrorLoginFailed));
 
-    // logger.debug({ login, runtimeConfig })
     setCookie(event, COOKIE_TOKEN, login.access_token, {
         secure: true,
         sameSite: 'strict',

@@ -1,0 +1,8 @@
+###
+
+POST {{api}}/api/chat/assistant/create
+###
+
+
+
+POST {{api}}/api/chat/assistant/start?assistant_id=34

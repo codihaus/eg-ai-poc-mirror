@@ -1,0 +1,50 @@
+###Get Assistant Detail
+GET {{api}}/api/chat/assistant/{{assistant_id}}
+
+### Create Thread
+POST {{api}}/api/chat/thread
+Content-Type: application/json
+
+### Read Thread
+GET {{api}}/api/chat/thread/{{thread_id}}
+
+
+### Create Message REST
+POST {{api}}/api/chat/message
+Content-Type: application/json
+
+{
+    "assistant_id": "{{assistant_id}}",
+    "thread_id": "{{thread_id}}",
+    "content": "Please give me a modern roof model"
+}
+
+### Create Message Stream
+POST {{api}}/api/chat/message/stream
+Content-Type: application/json
+
+{
+    "assistant_id": "{{assistant_id}}",
+    "thread_id": "thread_lW9qgEISUQ9rIs36zoW5boF3",
+    "content": "What are the code requirements for installing electrical outlets?"
+}
+
+### Get Message Detail
+POST {{api}}/api/chat/message/read
+Content-Type: application/json
+
+{
+    "thread_id": "thread_LSDfsIUFGdpQxM0hlj6VvcIx",
+    "msg_id": "msg_OogB6Mm6Yfl8bMAgFSTpsnmU"
+}
+
+
+### Get Message in Thread
+GET {{api}}/api/chat/message/{{thread_id}}?limit=1&after=
+
+### Get Message in Thread Page 2
+GET {{api}}/api/chat/message/{{thread_id}}?after=msg_6tlOwCZhD1P3VtYAVLZCdLYH&limit=1
+
+### Get RUN in Thread
+GET {{api}}/api/chat/run/{{thread_id}}/run_TpGaMUTGCyWNLx3DgyDMMHxH
+
