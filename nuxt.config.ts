@@ -8,7 +8,7 @@ export default defineNuxtConfig({
     modules: [
         "nuxt-proxy-request",
         "@bg-dev/nuxt-naiveui",
-        "@nuxt/image",
+        // "@nuxt/image",
         "@vueuse/nuxt",
         "@unocss/nuxt",
         "@nuxtjs/sitemap",
@@ -106,6 +106,9 @@ export default defineNuxtConfig({
         "/recaptcha/**": {
             swr: true,
         },
+        '/': {
+            redirect: '/thread/+'
+        }
     },
     nitro: {
         prerender: {

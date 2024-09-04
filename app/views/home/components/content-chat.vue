@@ -1,5 +1,7 @@
 <template>
     <div class="rounded-3xl overflow-hidden bg-white flex relative">
+        <img v-if="!isHaveConversations" src="/images/start-icon.svg" class="w-full absolute inset-x-0 top-0" >
+        
         <ContentChatHeader v-if="isHaveConversations" class="absolute top-0 w-full right-0 left-0 z-9 ease duration-500 " />
         <div class="flex-1 flex pt-14 pb-15">
             <NScrollbar class="flex-1 w-full mx-4">
@@ -14,8 +16,8 @@
             </div>
         </div>
 
-        <div class="absolute bg-white pb-2 bottom-0 w-full right-0 left-0 z-9 flex">
-            <ContentChatInput v-if="isHaveConversations" @on-submit="handleSubmit" class="max-w-3xl mx-auto flex-1" />
+        <div v-if="isHaveConversations" class="absolute bg-white pb-2 bottom-0 w-full right-0 left-0 z-9 flex">
+            <ContentChatInput @on-submit="handleSubmit" class="max-w-3xl mx-auto flex-1" />
             <div :class="isHaveConversations ? 'w-70' : 'w-0'" class="duration-500"></div>
         </div>
     </div>
@@ -28,6 +30,9 @@ import ContentChatStart from './content-chat-start.vue';
 import ContentChatInput from './content-chat-input.vue';
 import ContentChatSuggestion from './content-chat-suggestion.vue';
 import ContentChatConversations from './content-chat-conversations.vue';
+
+const route = useRoute()
+
 const coversations = ref<any>([]);
 
 function handleSubmit(data: any) {

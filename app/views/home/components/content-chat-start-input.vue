@@ -1,7 +1,7 @@
 <template>
     <form @submit.prevent="handleSubmit" ref="formRef" :class="{ 'border-base-300': isFocus }" class='p-3 border border-base-100 shadow-sm rounded-xl duration-100'>
 
-        <ContnetChatDisplayFiles v-if="dataForm['files']?.length" :files="dataForm['files']" @onRemoveFile="hanldeRemoveFile" class="mb-6" />
+        <!-- <ContnetChatDisplayFiles v-if="dataForm['files']?.length" :files="dataForm['files']" @onRemoveFile="hanldeRemoveFile" class="mb-6" /> -->
 
         <NInput
             @focus="isFocus = true"
@@ -10,14 +10,14 @@
             placeholder="Ask anything..."
             type="textarea"
             :autosize="{ minRows: 2, maxRows: 10 }"
-            @keydown="handleKeydown" />
-
-        <div class="flex-between">
-            <ContentChatInputFile @onChangeFile="onChangeFile" label="Attach" />
-            <button type='submit' :class="{ 'text-white bg-base-900': isHasValue }" class="p-2 rounded-full bg-base-50 hover:(text-white bg-base-900) duration-100">
-                <div class='i-solar:arrow-right-linear size-5'></div>
-            </button>
-        </div>
+            @keydown="handleKeydown"
+        >
+            <template class="flex-between" #suffix>
+                <button type='submit' :class="{ 'text-white bg-base-900': isHasValue }" class="p-2 rounded-full bg-base-50 hover:(text-white bg-base-900) duration-100">
+                    <div class='i-solar:arrow-right-linear size-5'></div>
+                </button>
+            </template>
+        </NInput>
     </form>
 </template>
 

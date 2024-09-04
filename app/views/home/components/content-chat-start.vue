@@ -1,8 +1,7 @@
 <template>
-    <div>
-        <IconContentChatAi class="w-full -mb-40" />
+    <div class="f-pt-80-200">
         <div class="text-center mx-auto">
-            <div look="h4" tag="h2" color="base" class="mb-3"> Engram AI: Your Digital Co-Pilot </div>
+            <div class="font-normal text-2xl text-base-900"> Engram AI: Your Digital Co-Pilot </div>
             <div look="base" tag="p">
                 Unlock the Potential of AI. Seamlessly integrate machine learning, natural language understanding, and
                 predictive analytics into your workflows. 

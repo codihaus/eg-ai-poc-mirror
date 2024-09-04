@@ -1,17 +1,17 @@
 <template>
     <div class="divide-y">
         <div v-for="(coversation) in coversations" class="py-14">
-            <div class="flex items-center space-x-2 mb-6">
-                <div class="size-8 object-cover rounded-full overflow-hidden">
+            <div class="mb-6">
+                <!-- <div class="size-8 object-cover rounded-full overflow-hidden">
                     <img :src="coversation.sender.avatar" class="size-full" />
-                </div>
-                <div look="h4">
+                </div> -->
+                <div class="font-semibold text-xl">
                     {{ coversation.message }}
                 </div>
             </div>
 
             <div class="space-y-4 my-6">
-                <div look="baseBold" class="line-clamp-1 text-base-700">
+                <div class="font-semibold text-lg line-clamp-1 text-base-700">
                     Sources
                 </div>
                 <ContnetChatDisplayFiles :files="coversation.sources" />
