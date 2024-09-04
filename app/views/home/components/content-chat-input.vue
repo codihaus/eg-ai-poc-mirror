@@ -1,8 +1,8 @@
 <template>
     <form @submit.prevent="handleSubmit" ref="formRef" :class="{ 'bg-base-100/80': isFocus }" class='p-2  bg-base-50 rounded-xl duration-100'>
-        <ContnetChatDisplayFiles v-if="dataForm['files']?.length" :files="dataForm['files']" @onRemoveFile="hanldeRemoveFile" class="mb-6" />
+        <!-- <ContnetChatDisplayFiles v-if="dataForm['files']?.length" :files="dataForm['files']" @onRemoveFile="hanldeRemoveFile" class="mb-6" /> -->
         <div class="flex items-end gap-1">
-            <ContentChatInputFile @onChangeFile="onChangeFile" />
+            <!-- <ContentChatInputFile @onChangeFile="onChangeFile" /> -->
             <NInput v-model:value="dataForm['message']" placeholder="Ask follow-up" type="textarea" @focus="isFocus = true" @keydown="handleKeydown"
                 :autosize="{ minRows: 1, maxRows: 10 }" />
 

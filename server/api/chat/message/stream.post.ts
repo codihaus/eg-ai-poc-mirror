@@ -101,7 +101,9 @@ export default defineEventHandler(async (event) => {
             // }
         }
 
-        res.write(JSON.stringify(payloadFE))
+        let output = payloadFE.event === 'thread.run.created' ? JSON.stringify(payloadFE) : ',' + JSON.stringify(payloadFE)
+
+        res.write(output)
     }
 
     console.log(message)

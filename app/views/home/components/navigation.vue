@@ -4,7 +4,7 @@
             <div class="text-center">
                 <Logo class="mx-auto" />
             </div>
-            <n-button type="primary" size="medium" class="w-full my-4">
+            <n-button type="primary" size="medium" class="w-full my-4" @click="createNewThread">
                 New Thread
                 <template #icon>
                     <div class="i-custom-edit-circle size-6"></div>
@@ -68,6 +68,16 @@ const MENU_SETTINGS = [
         link: "#settings",
     }
 ]
+
+async function createNewThread() {
+    await navigateTo({
+        name: 'chat-thread',
+        params: {
+            id: '+'
+        },
+        replace: true
+    })
+}
 
 </script>
 

@@ -5,6 +5,8 @@ export default defineEventHandler(async (event) => {
         openai,
     } = event.context
 
+    console.log('openai', openai)
+
     const thread = await openai.beta.threads.create();
 
     // Create Thread in Directus

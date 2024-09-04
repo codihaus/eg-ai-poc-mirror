@@ -19,7 +19,7 @@ const emit = defineEmits<{
 }>();
 
 function handleSubmit(data: any) {
-    console.log('submit', data);
+    // console.log('submit', data);
     emit('onSubmit', data);
 }
 </script>

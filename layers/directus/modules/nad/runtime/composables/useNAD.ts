@@ -3,7 +3,5 @@ export const useNAD = () => {
         $userClient
     } = useNuxtApp()
 
-    console.log('$userClient', $userClient)
-
     return $userClient
 }

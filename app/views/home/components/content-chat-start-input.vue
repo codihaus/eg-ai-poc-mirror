@@ -12,10 +12,12 @@
             :autosize="{ minRows: 2, maxRows: 10 }"
             @keydown="handleKeydown"
         >
-            <template class="flex-between" #suffix>
-                <button type='submit' :class="{ 'text-white bg-base-900': isHasValue }" class="p-2 rounded-full bg-base-50 hover:(text-white bg-base-900) duration-100">
-                    <div class='i-solar:arrow-right-linear size-5'></div>
-                </button>
+            <template #suffix>
+                <div>
+                    <n-button type='submit' :class="{ 'text-white bg-base-900': isHasValue }" :disabled="!isHasValue" class="p-2 rounded-full bg-base-50 hover:(text-white bg-base-900) duration-100" @click="handleSubmit">
+                        <div class='i-custom-arrow-right size-5'></div>
+                    </n-button>
+                </div>
             </template>
         </NInput>
     </form>
