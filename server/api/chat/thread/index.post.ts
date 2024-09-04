@@ -8,17 +8,17 @@ export default defineEventHandler(async (event) => {
     const thread = await openai.beta.threads.create();
 
     // Create Thread in Directus
-    // const body = await readBody(event);
-    // event.context.api_client.request(
-    //     createItem(
-    //         "chat_thread" as never,
-    //         {
-    //             id: thread.id,
-    //             assistant_id: assistant_id,
-    //             title: body?.title || ''
-    //         } as never
-    //     )
-    // )
+    const body = await readBody(event);
+    event.context.api_client.request(
+        createItem(
+            "chat_threads",
+            {
+                thread_id: thread.id,
+                assistant_id: process.env.OPENAI_ASSISTANT_ID,
+                title: body?.title || ''
+            }
+        )
+    )
 
     return {
         statusCode: 200,
