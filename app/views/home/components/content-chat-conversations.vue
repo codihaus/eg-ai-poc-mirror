@@ -23,8 +23,8 @@
                 </div>
                 <div class="px-4 py-6 bg-base-50 flex-grow">
                     <div class="prose mx-auto">
-                        <n-skeleton v-if="coversation?.loading || coversation?.content === '...'" rounded text :sharp="false"></n-skeleton>
-                        <n-skeleton v-if="coversation?.loading || coversation?.content === '...'" rounded text :sharp="false" class="w-6/10"></n-skeleton>
+                        <n-skeleton v-if="coversation?.loading" rounded text :sharp="false"></n-skeleton>
+                        <n-skeleton v-if="coversation?.loading" rounded text :sharp="false" class="w-6/10"></n-skeleton>
                         <div v-else v-html="renderMessage(coversation)"></div>
                     </div>
                 </div>

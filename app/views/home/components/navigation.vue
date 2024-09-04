@@ -70,13 +70,12 @@ const MENU_SETTINGS = [
 ]
 
 async function createNewThread() {
-    await navigateTo({
-        name: 'chat-thread',
-        params: {
-            id: '+'
-        },
-        replace: true
-    })
+    // await navigateTo({
+    //     name: 'home',
+    // },
+    // {replace: true}
+    // )
+    window.location.href = `/`
 }
 
 </script>

@@ -45,7 +45,7 @@ const api = useNAD()
 
 
 
-const { data: conversations } = await useAsyncData(
+const { data: conversations, refresh } = await useAsyncData(
     () => route?.params?.id && route?.params?.id !== '+' ? api.request(
         customEndpoint({
             method: 'GET',
@@ -107,13 +107,14 @@ function addMessage(data) {
     let lastMessage = last(conversations.value)
     let lastMessageIndex = conversations.value?.length - 1
 
-    if( !lastMessage ) {
+    if( !lastMessage || !lastMessage?.stream ) {
         conversations.value.push({
             message: data?.message,
             sources: [],
             date: "20:22",
             type: "text",
             loading: true,
+            stream: true,
             content: ``
         })
         return
@@ -122,7 +123,7 @@ function addMessage(data) {
     conversations.value[lastMessageIndex] = {
         ...lastMessage,
         loading: false,
-        steam: data?.stream,
+        stream: data?.stream,
         content: lastMessage.content + (data?.content || '')
     }
 }
@@ -151,108 +152,110 @@ async function handleSubmit(data: any) {
         // refreshRecentThreads.value = true
     }
 
-    const { data: createdMessage } = await useAsyncData(async () => {
+    // const { data: createdMessage } = await useAsyncData(async () => {
 
-        let response = await $fetch(`/api/chat/message/stream`, {
-            method: 'post',
-            responseType: 'stream',
-            body: {
-                content,
-                thread_id,
-            },
-            transform: (res: any) => destr(res)
-        }).catch((e) => {
-            console.log('stream_error', e)
+    //     // return streamResult;
+    // })
+    let response = await $fetch(`/api/chat/message/stream`, {
+        method: 'post',
+        responseType: 'stream',
+        body: {
+            content,
+            thread_id,
+        },
+        transform: (res: any) => destr(res)
+    }).catch((e) => {
+        console.log('stream_error', e)
+        addMessage({
+            content: 'Failed to process your request. Please try again!',
+            stream: false
+        });
+        
+    })
+    const reader = response.getReader();
+    const decoder = new TextDecoder('utf-8');
+    let streamResult = '';
+
+    let annotations = [];
+    let contents = ''
+
+    while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        let streamEvent = decoder.decode(value, { stream: true })
+        
+        streamEvent = streamEvent?.startsWith(',') ? streamEvent?.substring(1) : streamEvent
+        streamEvent = `[${streamEvent}]`
+
+        if( streamEvent?.includes('thread.run.failed') ) {
+            console.log('stream_error:', 'thread.run.failed')
             addMessage({
+                type: 'message',
                 content: 'Failed to process your request. Please try again!',
-                stream: false
             });
-            
-        })
-        const reader = response.getReader();
-        const decoder = new TextDecoder('utf-8');
-        let streamResult = '';
+            break;
+        }
 
-        let annotations = [];
-        let contents = ''
+        streamEvent = destr(streamEvent)
+        
+        for (let i = 0; i < streamEvent?.length; i++) {
+            let event = get(streamEvent[i], 'event')
+            let data = get(streamEvent[i], 'data')
 
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            let streamEvent = decoder.decode(value, { stream: true })
-            
-            streamEvent = streamEvent?.startsWith(',') ? streamEvent?.substring(1) : streamEvent
-            streamEvent = `[${streamEvent}]`
-
-            if( streamEvent?.includes('thread.run.failed') ) {
-                console.log('stream_error:', 'thread.run.failed')
+            if(event === 'thread.run.failed') {
                 addMessage({
-                    type: 'message',
                     content: 'Failed to process your request. Please try again!',
                 });
                 break;
             }
 
-            streamEvent = destr(streamEvent)
-            
-            for (let i = 0; i < streamEvent?.length; i++) {
-                let event = get(streamEvent[i], 'event')
-                let data = get(streamEvent[i], 'data')
+            if( data?.length ) {
+                
+                for(let j=0; j<data.length; j++ ) {
+                    let text = get(data[j], 'text.value')
+                    let content: string = text || ''
+                    let annotation = get(data[j], 'text.annotations')?.map((item: any) => {
+                        const existIndex = annotations.findIndex((an) => an.name === item?.file_citation?.file_id)
 
-                if(event === 'thread.run.failed') {
+                        if( existIndex < 0 ) {
+                            annotations.push({
+                                name: item?.file_citation?.file_id,
+                                text: item?.text
+                            })
+                            content += ` [(${annotations.length})](#)`
+                        }
+                    })
+
                     addMessage({
-                        content: 'Failed to process your request. Please try again!',
+                        content,
+                        annotations,
+                        stream: true
                     });
-                    break;
                 }
 
-                if( data?.length ) {
-                    
-                    for(let j=0; j<data.length; j++ ) {
-                        let text = get(data[j], 'text.value')
-                        let content: string = text || ''
-                        let annotation = get(data[j], 'text.annotations')?.map((item: any) => {
-                            const existIndex = annotations.findIndex((an) => an.name === item?.file_citation?.file_id)
-
-                            if( existIndex < 0 ) {
-                                annotations.push({
-                                    name: item?.file_citation?.file_id,
-                                    text: item?.text
-                                })
-                                content += ` [(${annotations.length})](#)`
-                            }
-                        })
-
-                        addMessage({
-                            content,
-                            annotations,
-                            stream: true
-                        });
-                    }
-
-                }
-                await delay(10)
             }
-
-            streamResult += streamEvent;
+            await delay(10)
         }
-        addMessage({
-            stream: false,
-        })
-        // return streamResult;
+
+        streamResult += streamEvent;
+    }
+    addMessage({
+        stream: false,
     })
     console.log('submit', data);
     if( route.params?.id === '+' ) {
         console.log('navigateTo thread', route, thread_id)
-        await navigateTo({
-            name: 'chat-thread',
-            params: {
-                id: getThreadParamID(thread_id)
-            },
-            replace: true
-        })
+        // await navigateTo({
+        //     name: 'chat-thread',
+        //     params: {
+        //         id: getThreadParamID(thread_id)
+        //     },
+        // }, {
+        //     replace: true
+        // })
+        window.location.href = `/thread/${getThreadParamID(thread_id)}`
     }
-    }
+}
 
 const _coversations = [
     {
@@ -297,16 +300,15 @@ const isHaveConversations = computed(() => {
     return conversations.value.length > 0;
 })
 
-if( route.name === 'chat-thread' && route.params?.id === '+' ) {
-    console.log('clear')
-    conversations.value = []
-}
+// if( route.name === 'chat-thread' && route.params?.id === '+' ) {
+//     console.log('clear')
+//     conversations.value = []
+// }
 
 router.beforeEach((to, from, next) => {
     if( to.name === 'chat-thread' && to.params?.id === '+' ) {
-        conversations.value = []
-        console.log('beforeEach', to)
-        next()
+        // conversations.value = []
+        // console.log('beforeEach', to)
     }
 })
 
