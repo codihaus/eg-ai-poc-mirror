@@ -1,6 +1,6 @@
 import * as sdk from "@directus/sdk"
-import {useNAD} from "@directusLayer/modules/nad/composables/useNAD";
-import {useNADLoading} from "@directusLayer/modules/nad/composables/useNADLoading";
+import {useNAD} from "./useNAD";
+import {useNADLoading} from "./useNADLoading";
 
 export const useNADAuth = () => {
     const api: any = useNAD()
