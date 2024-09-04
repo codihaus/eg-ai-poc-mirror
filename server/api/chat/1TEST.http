@@ -48,3 +48,8 @@ GET {{api}}/api/chat/message/{{thread_id}}?after=msg_6tlOwCZhD1P3VtYAVLZCdLYH&li
 ### Get RUN in Thread
 GET {{api}}/api/chat/run/{{thread_id}}/run_TpGaMUTGCyWNLx3DgyDMMHxH
 
+###
+@api = http://localhost:3000
+@assistant_id = asst_01HX3G3Z0G3Z0G3Z0G3Z0G3Z0
+
+
