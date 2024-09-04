@@ -1,53 +1,15 @@
 <template>
-	<MasterLayout>
-		<template #left>
-			<div class="text-center p-5">
-				Left Sidebar
-				Lorem ipsum dolor sit amet, consectetur adipisicing elit. A dolore ducimus, facilis libero minima molestias nostrum nulla odit reiciendis voluptatibus. Deserunt eveniet ipsum necessitatibus repellat! Ad, aliquam aut excepturi fuga iste laboriosam, minus modi natus nulla perferendis quas, quidem. Autem dolorem sunt unde. Aliquam consequatur deserunt in molestias unde! Aliquid commodi eaque et fugit id labore nam non numquam, sunt voluptatem? Amet assumenda dolorem eligendi maiores molestiae necessitatibus pariatur qui sit suscipit veniam? Aliquid aperiam assumenda aut esse nulla velit vero. Ab accusantium animi cupiditate ea exercitationem explicabo fugit illo, ipsa minus odio quasi quia quo repudiandae veritatis voluptate voluptatem.
-				Lorem ipsum dolor sit amet, consectetur adipisicing elit. A dolore ducimus, facilis libero minima molestias nostrum nulla odit reiciendis voluptatibus. Deserunt eveniet ipsum necessitatibus repellat! Ad, aliquam aut excepturi fuga iste laboriosam, minus modi natus nulla perferendis quas, quidem. Autem dolorem sunt unde. Aliquam consequatur deserunt in molestias unde! Aliquid commodi eaque et fugit id labore nam non numquam, sunt voluptatem? Amet assumenda dolorem eligendi maiores molestiae necessitatibus pariatur qui sit suscipit veniam? Aliquid aperiam assumenda aut esse nulla velit vero. Ab accusantium animi cupiditate ea exercitationem explicabo fugit illo, ipsa minus odio quasi quia quo repudiandae veritatis voluptate voluptatem.
-				Lorem ipsum dolor sit amet, consectetur adipisicing elit. A dolore ducimus, facilis libero minima molestias nostrum nulla odit reiciendis voluptatibus. Deserunt eveniet ipsum necessitatibus repellat! Ad, aliquam aut excepturi fuga iste laboriosam, minus modi natus nulla perferendis quas, quidem. Autem dolorem sunt unde. Aliquam consequatur deserunt in molestias unde! Aliquid commodi eaque et fugit id labore nam non numquam, sunt voluptatem? Amet assumenda dolorem eligendi maiores molestiae necessitatibus pariatur qui sit suscipit veniam? Aliquid aperiam assumenda aut esse nulla velit vero. Ab accusantium animi cupiditate ea exercitationem explicabo fugit illo, ipsa minus odio quasi quia quo repudiandae veritatis voluptate voluptatem.
-				Lorem ipsum dolor sit amet, consectetur adipisicing elit. A dolore ducimus, facilis libero minima molestias nostrum nulla odit reiciendis voluptatibus. Deserunt eveniet ipsum necessitatibus repellat! Ad, aliquam aut excepturi fuga iste laboriosam, minus modi natus nulla perferendis quas, quidem. Autem dolorem sunt unde. Aliquam consequatur deserunt in molestias unde! Aliquid commodi eaque et fugit id labore nam non numquam, sunt voluptatem? Amet assumenda dolorem eligendi maiores molestiae necessitatibus pariatur qui sit suscipit veniam? Aliquid aperiam assumenda aut esse nulla velit vero. Ab accusantium animi cupiditate ea exercitationem explicabo fugit illo, ipsa minus odio quasi quia quo repudiandae veritatis voluptate voluptatem.
-			</div>
-		</template>
-
-		<template #default>
-			<main class="w-full mt-24">
-				<h1 class="text-3xl font-bold text-center">Home</h1>
-				<p class="text-center">Welcome to the home page</p>
-				Lorem ipsum dolor sit amet, consectetur adipisicing elit. A dolore ducimus, facilis libero minima molestias nostrum nulla odit reiciendis voluptatibus. Deserunt eveniet ipsum necessitatibus repellat! Ad, aliquam aut excepturi fuga iste laboriosam, minus modi natus nulla perferendis quas, quidem. Autem dolorem sunt unde. Aliquam consequatur deserunt in molestias unde! Aliquid commodi eaque et fugit id labore nam non numquam, sunt voluptatem? Amet assumenda dolorem eligendi maiores molestiae necessitatibus pariatur qui sit suscipit veniam? Aliquid aperiam assumenda aut esse nulla velit vero. Ab accusantium animi cupiditate ea exercitationem explicabo fugit illo, ipsa minus odio quasi quia quo repudiandae veritatis voluptate voluptatem.
-				Lorem ipsum dolor sit amet, consectetur adipisicing elit. A dolore ducimus, facilis libero minima molestias nostrum nulla odit reiciendis voluptatibus. Deserunt eveniet ipsum necessitatibus repellat! Ad, aliquam aut excepturi fuga iste laboriosam, minus modi natus nulla perferendis quas, quidem. Autem dolorem sunt unde. Aliquam consequatur deserunt in molestias unde! Aliquid commodi eaque et fugit id labore nam non numquam, sunt voluptatem? Amet assumenda dolorem eligendi maiores molestiae necessitatibus pariatur qui sit suscipit veniam? Aliquid aperiam assumenda aut esse nulla velit vero. Ab accusantium animi cupiditate ea exercitationem explicabo fugit illo, ipsa minus odio quasi quia quo repudiandae veritatis voluptate voluptatem.
-				Lorem ipsum dolor sit amet, consectetur adipisicing elit. A dolore ducimus, facilis libero minima molestias nostrum nulla odit reiciendis voluptatibus. Deserunt eveniet ipsum necessitatibus repellat! Ad, aliquam aut excepturi fuga iste laboriosam, minus modi natus nulla perferendis quas, quidem. Autem dolorem sunt unde. Aliquam consequatur deserunt in molestias unde! Aliquid commodi eaque et fugit id labore nam non numquam, sunt voluptatem? Amet assumenda dolorem eligendi maiores molestiae necessitatibus pariatur qui sit suscipit veniam? Aliquid aperiam assumenda aut esse nulla velit vero. Ab accusantium animi cupiditate ea exercitationem explicabo fugit illo, ipsa minus odio quasi quia quo repudiandae veritatis voluptate voluptatem.
-				Lorem ipsum dolor sit amet, consectetur adipisicing elit. A dolore ducimus, facilis libero minima molestias nostrum nulla odit reiciendis voluptatibus. Deserunt eveniet ipsum necessitatibus repellat! Ad, aliquam aut excepturi fuga iste laboriosam, minus modi natus nulla perferendis quas, quidem. Autem dolorem sunt unde. Aliquam consequatur deserunt in molestias unde! Aliquid commodi eaque et fugit id labore nam non numquam, sunt voluptatem? Amet assumenda dolorem eligendi maiores molestiae necessitatibus pariatur qui sit suscipit veniam? Aliquid aperiam assumenda aut esse nulla velit vero. Ab accusantium animi cupiditate ea exercitationem explicabo fugit illo, ipsa minus odio quasi quia quo repudiandae veritatis voluptate voluptatem.
-				Lorem ipsum dolor sit amet, consectetur adipisicing elit. A dolore ducimus, facilis libero minima molestias nostrum nulla odit reiciendis voluptatibus. Deserunt eveniet ipsum necessitatibus repellat! Ad, aliquam aut excepturi fuga iste laboriosam, minus modi natus nulla perferendis quas, quidem. Autem dolorem sunt unde. Aliquam consequatur deserunt in molestias unde! Aliquid commodi eaque et fugit id labore nam non numquam, sunt voluptatem? Amet assumenda dolorem eligendi maiores molestiae necessitatibus pariatur qui sit suscipit veniam? Aliquid aperiam assumenda aut esse nulla velit vero. Ab accusantium animi cupiditate ea exercitationem explicabo fugit illo, ipsa minus odio quasi quia quo repudiandae veritatis voluptate voluptatem.
-				Lorem ipsum dolor sit amet, consectetur adipisicing elit. A dolore ducimus, facilis libero minima molestias nostrum nulla odit reiciendis voluptatibus. Deserunt eveniet ipsum necessitatibus repellat! Ad, aliquam aut excepturi fuga iste laboriosam, minus modi natus nulla perferendis quas, quidem. Autem dolorem sunt unde. Aliquam consequatur deserunt in molestias unde! Aliquid commodi eaque et fugit id labore nam non numquam, sunt voluptatem? Amet assumenda dolorem eligendi maiores molestiae necessitatibus pariatur qui sit suscipit veniam? Aliquid aperiam assumenda aut esse nulla velit vero. Ab accusantium animi cupiditate ea exercitationem explicabo fugit illo, ipsa minus odio quasi quia quo repudiandae veritatis voluptate voluptatem.
-				Lorem ipsum dolor sit amet, consectetur adipisicing elit. A dolore ducimus, facilis libero minima molestias nostrum nulla odit reiciendis voluptatibus. Deserunt eveniet ipsum necessitatibus repellat! Ad, aliquam aut excepturi fuga iste laboriosam, minus modi natus nulla perferendis quas, quidem. Autem dolorem sunt unde. Aliquam consequatur deserunt in molestias unde! Aliquid commodi eaque et fugit id labore nam non numquam, sunt voluptatem? Amet assumenda dolorem eligendi maiores molestiae necessitatibus pariatur qui sit suscipit veniam? Aliquid aperiam assumenda aut esse nulla velit vero. Ab accusantium animi cupiditate ea exercitationem explicabo fugit illo, ipsa minus odio quasi quia quo repudiandae veritatis voluptate voluptatem.
-
-			</main>
-		</template>
-
-		<template #right>
-			<div class="text-center p-5">
-
-				Lorem ipsum dolor sit amet, consectetur adipisicing elit. A dolore ducimus, facilis libero minima molestias nostrum nulla odit reiciendis voluptatibus. Deserunt eveniet ipsum necessitatibus repellat! Ad, aliquam aut excepturi fuga iste laboriosam, minus modi natus nulla perferendis quas, quidem. Autem dolorem sunt unde. Aliquam consequatur deserunt in molestias unde! Aliquid commodi eaque et fugit id labore nam non numquam, sunt voluptatem? Amet assumenda dolorem eligendi maiores molestiae necessitatibus pariatur qui sit suscipit veniam? Aliquid aperiam assumenda aut esse nulla velit vero. Ab accusantium animi cupiditate ea exercitationem explicabo fugit illo, ipsa minus odio quasi quia quo repudiandae veritatis voluptate voluptatem.
-				Lorem ipsum dolor sit amet, consectetur adipisicing elit. A dolore ducimus, facilis libero minima molestias nostrum nulla odit reiciendis voluptatibus. Deserunt eveniet ipsum necessitatibus repellat! Ad, aliquam aut excepturi fuga iste laboriosam, minus modi natus nulla perferendis quas, quidem. Autem dolorem sunt unde. Aliquam consequatur deserunt in molestias unde! Aliquid commodi eaque et fugit id labore nam non numquam, sunt voluptatem? Amet assumenda dolorem eligendi maiores molestiae necessitatibus pariatur qui sit suscipit veniam? Aliquid aperiam assumenda aut esse nulla velit vero. Ab accusantium animi cupiditate ea exercitationem explicabo fugit illo, ipsa minus odio quasi quia quo repudiandae veritatis voluptate voluptatem.
-				Lorem ipsum dolor sit amet, consectetur adipisicing elit. A dolore ducimus, facilis libero minima molestias nostrum nulla odit reiciendis voluptatibus. Deserunt eveniet ipsum necessitatibus repellat! Ad, aliquam aut excepturi fuga iste laboriosam, minus modi natus nulla perferendis quas, quidem. Autem dolorem sunt unde. Aliquam consequatur deserunt in molestias unde! Aliquid commodi eaque et fugit id labore nam non numquam, sunt voluptatem? Amet assumenda dolorem eligendi maiores molestiae necessitatibus pariatur qui sit suscipit veniam? Aliquid aperiam assumenda aut esse nulla velit vero. Ab accusantium animi cupiditate ea exercitationem explicabo fugit illo, ipsa minus odio quasi quia quo repudiandae veritatis voluptate voluptatem.
-				Lorem ipsum dolor sit amet, consectetur adipisicing elit. A dolore ducimus, facilis libero minima molestias nostrum nulla odit reiciendis voluptatibus. Deserunt eveniet ipsum necessitatibus repellat! Ad, aliquam aut excepturi fuga iste laboriosam, minus modi natus nulla perferendis quas, quidem. Autem dolorem sunt unde. Aliquam consequatur deserunt in molestias unde! Aliquid commodi eaque et fugit id labore nam non numquam, sunt voluptatem? Amet assumenda dolorem eligendi maiores molestiae necessitatibus pariatur qui sit suscipit veniam? Aliquid aperiam assumenda aut esse nulla velit vero. Ab accusantium animi cupiditate ea exercitationem explicabo fugit illo, ipsa minus odio quasi quia quo repudiandae veritatis voluptate voluptatem.
-
-			</div>
-		</template>
-	</MasterLayout>
+    <div class="bg-#EAE9EC h-screen grid grid-cols-[18rem_1fr] p-3 gap-3 ">
+        <Navigation />
+        <ContentChat />
+    </div>
 </template>
 
-<script setup lang="ts">
-import MasterLayout from "~/app/components/layout/master-layout.vue";
+<script setup lang='ts'>
+import Navigation from './components/navigation.vue';
+import ContentChat from './components/content-chat.vue';
 
-const nuxtApp = useNuxtApp()
-const {
-	$adminClient,
-	$userClient
-} = useNuxtApp()
-
-const currentUser = useState("currentUser", () => {
-	return {}
-})
+definePageMeta({
+    layout: 'none',
+});
 </script>

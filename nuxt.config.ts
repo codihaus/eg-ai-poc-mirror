@@ -7,6 +7,8 @@ export default defineNuxtConfig({
     ],
     modules: [
         "nuxt-proxy-request",
+        "@bg-dev/nuxt-naiveui",
+        "@nuxt/image",
         "@vueuse/nuxt",
         "@unocss/nuxt",
         "@nuxtjs/sitemap",
@@ -14,6 +16,19 @@ export default defineNuxtConfig({
         "@nuxtjs/i18n",
         ["@pinia/nuxt", { autoImports: ["defineStore"] }],
     ],
+    image: {
+        provider: "directus",
+        directus: {
+            baseURL: `${process.env.NUXT_PUBLIC_URL}/api/assets/`,
+        },
+        screens: {
+            xs: 320,
+            sm: 640,
+            md: 768,
+            lg: 1024,
+            xl: 1280,
+        },
+    },
     naiveui,
     proxy,
     i18n,
