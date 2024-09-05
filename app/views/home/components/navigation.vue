@@ -73,7 +73,7 @@ async function createNewThread() {
     // await navigateTo({
     //     name: 'home',
     // },
-    // {replace: true}
+    // // {replace: true}
     // )
     window.location.href = `/`
 }

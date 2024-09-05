@@ -106,9 +106,9 @@ export default defineNuxtConfig({
         "/recaptcha/**": {
             swr: true,
         },
-        '/': {
-            redirect: '/thread/+'
-        }
+        // '/': {
+        //     redirect: '/thread/+'
+        // }
     },
     nitro: {
         prerender: {

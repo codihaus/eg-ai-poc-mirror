@@ -122,7 +122,7 @@ function addMessage(data) {
 
     conversations.value[lastMessageIndex] = {
         ...lastMessage,
-        annotations: uniqBy([...data?.files || [], ...lastMessage?.files], 'name'),
+        sources: uniqBy([...(data?.files || []), ...(lastMessage?.files || [])], 'name'),
         loading: false,
         stream: data?.stream,
         content: lastMessage.content + (data?.content || '')
@@ -138,7 +138,7 @@ async function handleSubmit(data: any) {
 
     let thread_id = getThreadID(route?.params?.id)
 
-    if( route.params.id === '+' && route.name === 'chat-thread' ) {
+    if( route.name === 'home' && ! route?.params?.id ) {
         
         const createdThread = await api.request(customEndpoint({
             method: 'POST',
@@ -252,7 +252,7 @@ async function handleSubmit(data: any) {
         stream: false,
     })
     console.log('submit', data);
-    if( route.params?.id === '+' ) {
+    if( route.name === 'home' ) {
         console.log('navigateTo thread', route, thread_id)
         // await navigateTo({
         //     name: 'chat-thread',
