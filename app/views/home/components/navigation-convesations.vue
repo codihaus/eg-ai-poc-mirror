@@ -1,6 +1,6 @@
 <template>
     <div class="w-full bg-white">
-        <NuxtLink v-for="({ title, link }, index) in recentThreads" :key="index" :to="link"
+        <NuxtLink v-for="({ title, link }, index) in recentThreads" :key="link" :to="link"
             class="flex-items gap-3 px-3 py-2 hover:bg-neutral-100 rounded-lg cursor-pointer">
             <div look="base" color="base" class="line-clamp-1">
                 {{ title }}
@@ -81,11 +81,12 @@ const { data: recentThreads, refresh } = await useAsyncData('recentThreads', () 
         user_created: currentUser.value?.id
     }
 })), {
+    server: false,
     transform: (response) => {
         console.log('res', response)
-        return response?.items?.map((item) => ({
+        return response?.map((item) => ({
             title: item?.title,
-            link: `/thread/${getThreadParamID(item?.id)}`
+            link: `/thread/${getThreadParamID(item?.thread_id)}`
         }))
     }
 })
