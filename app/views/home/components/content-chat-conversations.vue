@@ -1,6 +1,6 @@
 <template>
     <div class="divide-y">
-        <div v-if="!loading">
+        <template v-if="!loading">
             <div v-for="(coversation) in coversations" class="py-14">
                 <div class="mb-6">
                     <!-- <div class="size-8 object-cover rounded-full overflow-hidden">
@@ -36,8 +36,8 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div v-else>
+        </template>
+        <template v-else>
             <div v-for="(coversation) in new Array(2).fill({})" class="py-14">
                 <div class="mb-6">
                     <!-- <div class="size-8 object-cover rounded-full overflow-hidden">
@@ -67,7 +67,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </template>
     </div>
 
 </template>
@@ -109,7 +109,7 @@ const md = new markdownit({
 
 function renderMessage(messgage) {
     let content = messgage?.content || ''
-    
+
     content = renderMathInText(content, {
         delimiters: [
             {left: "$$", right: "$$", display: true},

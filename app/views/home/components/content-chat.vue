@@ -37,6 +37,7 @@ import { destr } from 'destr'
 const route = useRoute()
 const router = useRouter()
 const api = useNAD()
+const currentUser = useState('currentUser')
 
 // const conversations = ref<any>([]);
 
@@ -46,7 +47,7 @@ const api = useNAD()
 
 
 const { data: conversations, pending, refresh } = await useAsyncData(
-    () => route?.params?.id && route?.params?.id !== '+' ? api.request(
+    () => route?.params?.id && route?.params?.id !== '+' && currentUser.value?.id ? api.request(
         customEndpoint({
             method: 'GET',
             path: `/chat/message/${getThreadID(route?.params?.id)}`

@@ -119,9 +119,10 @@ async function handleSubmit() {
             description: 'Welcome!',
             duration: 3000
         })
-        navigateTo({
-            name: 'home'
-        })
+        // navigateTo({
+        //     name: 'home'
+        // })
+        window.location.href = `/`
     }
 
 }

@@ -1,7 +1,7 @@
 <template>
     <div class="p-5 bg-[#FAF9FA]">
         <div class=" shadow-user-ai duration-100 bg-white p-4 rounded-2">
-            <div v-if="!user?.id">
+            <div v-if="!currentUser?.id">
                 <NButton type="primary" ghost class="w-full mt-4 font-medium" @click="showLoginPopup = true">
                     Login
                 </NButton>
@@ -41,16 +41,16 @@
 </template>
 
 <script setup lang='ts'>
-const user = useState('currentUser')
+const currentUser = useState('currentUser')
 const showLoginPopup = ref(false)
 
-if( !user.value.id ) {
+if( !currentUser.value?.id ) {
     showLoginPopup.value = true
 }
 
-console.log('user', user.value)
-const userFullName = computed(() => `${user.value?.first_name} ${user.value?.last_name}`);
-const userMail = computed(() => user.value?.email);
+console.log('user', currentUser.value)
+const userFullName = computed(() => `${currentUser.value?.first_name} ${currentUser.value?.last_name}`);
+const userMail = computed(() => currentUser.value?.email);
 </script>
 
 <style scoped></style>
