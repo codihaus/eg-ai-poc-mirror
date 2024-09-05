@@ -56,37 +56,22 @@ const { data: conversations, pending, refresh } = await useAsyncData(
         server: false,
 		transform: (response) => {
             console.log('response', response)
-            let allMessage = (response?.messages || [])?.sort((a, b) => a.created_at - b.created_at)
-            let output = allMessage?.filter((mess,index) => {
-                mess.index = index
-                return index % 2 === 0
+            let allMessage = (response?.messages || [])?.sort((a, b) => a.created_at - b.created_at)?.map((item,index) => ({...item, index}))
+            let output = allMessage?.filter((mess) => {
+                return mess.role === 'user'
             })?.map((mess, index) => {
 
-                let content = get(allMessage, `${mess?.index+1}.content.0.text.value`)?.replace(/\s+$/, '')
+                let nextMessage = get(allMessage, `${mess?.index+1}`)
+
+                let content = nextMessage?.role === 'assistant' ? get(allMessage, `${mess?.index+1}.content.0.text.value`)?.replace(/\s+$/, '') : 'Content not found'
                 let message = get(mess?.content, '0.text.value')?.replace(/\s+$/, '')
-                let sources = get(allMessage, `${mess?.index+1}.files`)?.map(({file}) =>({
+                let sources = nextMessage?.role === 'assistant' ? get(allMessage, `${mess?.index+1}.files`)?.map(({file}) =>({
                     name: file.filename
-                }))
-                // let sources = get(mess?.content, '0.text.annotations')?.map((item) => {
-                    
-                //     return {
-                //         name: item?.file_citation?.file_id,
-                //         text: item?.text
-                //         // link: item?.text
-                //     }
-                // })
-
-                // sources = uniqBy(sources, 'name') || null
-
-                // sources?.map((item, index) => {
-                //     content = content?.replaceAll(item?.text, ` [(${index+1})](#)`)
-                // })
-
+                })) : []
+                
                 return {
-                    // user: mess?.role === 'user' ? user : userAI,
                     type: 'text',
                     message,
-                    // attachments: mess.attachments?.map((attachment) => attachment?.file_id),
                     sources,
                     content,
                     id: mess?.id
@@ -252,7 +237,7 @@ async function handleSubmit(data: any) {
         stream: false,
     })
     console.log('submit', data);
-    if( route.name === 'home' ) {
+    if( route.name === 'home'  ) {
         console.log('navigateTo thread', route, thread_id)
         // await navigateTo({
         //     name: 'chat-thread',
