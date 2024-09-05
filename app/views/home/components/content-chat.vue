@@ -1,13 +1,13 @@
 <template>
     <div class="rounded-3xl overflow-hidden bg-white flex relative">
-        <img v-if="!isHaveConversations" src="/images/start-icon.svg" class="w-full absolute inset-x-0 top-0" >
+        <img v-if="!isHaveConversations && !pending" src="/images/start-icon.svg" class="w-full absolute inset-x-0 top-0" >
         
-        <ContentChatHeader v-if="isHaveConversations" class="absolute top-0 w-full right-0 left-0 z-9 ease duration-500 " />
+        <ContentChatHeader v-if="isHaveConversations || pending" class="absolute top-0 w-full right-0 left-0 z-9 ease duration-500 " />
         <div class="flex-1 flex pt-14 pb-15">
             <NScrollbar class="flex-1 w-full mx-4">
                 <div class="max-w-3xl mx-auto pb-20">
-                    <ContentChatConversations :coversations="conversations" />
-                    <ContentChatStart v-if="!isHaveConversations" @on-submit="handleSubmit" />
+                    <ContentChatConversations :coversations="conversations" :loading="pending"/>
+                    <ContentChatStart v-if="!isHaveConversations && !pending" @on-submit="handleSubmit" />
                 </div>
             </NScrollbar>
 
@@ -45,7 +45,7 @@ const api = useNAD()
 
 
 
-const { data: conversations, refresh } = await useAsyncData(
+const { data: conversations, pending, refresh } = await useAsyncData(
     () => route?.params?.id && route?.params?.id !== '+' ? api.request(
         customEndpoint({
             method: 'GET',
@@ -53,6 +53,7 @@ const { data: conversations, refresh } = await useAsyncData(
         })
     ) : {},
 	{
+        server: false,
 		transform: (response) => {
             console.log('response', response)
             let allMessage = (response?.messages || [])?.sort((a, b) => a.created_at - b.created_at)
@@ -61,21 +62,25 @@ const { data: conversations, refresh } = await useAsyncData(
                 return index % 2 === 0
             })?.map((mess, index) => {
 
-                console.log('messss', mess)
-
-
                 let content = get(allMessage, `${mess?.index+1}.content.0.text.value`)?.replace(/\s+$/, '')
                 let message = get(mess?.content, '0.text.value')?.replace(/\s+$/, '')
-                let sources = get(mess?.content, '0.text.annotations')?.map((item) => {
+                let sources = get(allMessage, `${mess?.index+1}.files`)?.map(({file}) =>({
+                    name: file.filename
+                }))
+                // let sources = get(mess?.content, '0.text.annotations')?.map((item) => {
                     
-                    return {
-                        name: item?.file_citation?.file_id,
-                        text: item?.text
-                        // link: item?.text
-                    }
-                })
+                //     return {
+                //         name: item?.file_citation?.file_id,
+                //         text: item?.text
+                //         // link: item?.text
+                //     }
+                // })
 
-                sources = uniqBy(sources, 'name') || null
+                // sources = uniqBy(sources, 'name') || null
+
+                // sources?.map((item, index) => {
+                //     content = content?.replaceAll(item?.text, ` [(${index+1})](#)`)
+                // })
 
                 return {
                     // user: mess?.role === 'user' ? user : userAI,
@@ -87,12 +92,7 @@ const { data: conversations, refresh } = await useAsyncData(
                     id: mess?.id
                 }
             })
-            console.log('thread', output)
-
-            // conversations.value = output
-
-            // console.log('conversations.value', conversations.value)
-
+            
             if( route.params?.id && route.params?.id !== '+' ) {
                 return output?.length ? output : []
             }
@@ -110,7 +110,7 @@ function addMessage(data) {
     if( !lastMessage || !lastMessage?.stream ) {
         conversations.value.push({
             message: data?.message,
-            sources: [],
+            sources: data?.files || [],
             date: "20:22",
             type: "text",
             loading: true,
@@ -122,6 +122,7 @@ function addMessage(data) {
 
     conversations.value[lastMessageIndex] = {
         ...lastMessage,
+        annotations: uniqBy([...data?.files || [], ...lastMessage?.files], 'name'),
         loading: false,
         stream: data?.stream,
         content: lastMessage.content + (data?.content || '')
@@ -197,10 +198,19 @@ async function handleSubmit(data: any) {
         }
 
         streamEvent = destr(streamEvent)
+
+        console.log('streamEvent', streamEvent)
+
+        if( !isArray(streamEvent) ) {
+            return;
+        }
         
         for (let i = 0; i < streamEvent?.length; i++) {
             let event = get(streamEvent[i], 'event')
             let data = get(streamEvent[i], 'data')
+            let files = get(streamEvent[i], 'files')
+
+            console.log('files', files)
 
             if(event === 'thread.run.failed') {
                 addMessage({
@@ -214,30 +224,29 @@ async function handleSubmit(data: any) {
                 for(let j=0; j<data.length; j++ ) {
                     let text = get(data[j], 'text.value')
                     let content: string = text || ''
-                    let annotation = get(data[j], 'text.annotations')?.map((item: any) => {
-                        const existIndex = annotations.findIndex((an) => an.name === item?.file_citation?.file_id)
+                    // let annotation = get(data[j], 'text.annotations')?.map((item: any) => {
+                    //     const existIndex = annotations.findIndex((an) => an.name === item?.file_citation?.file_id)
 
-                        if( existIndex < 0 ) {
-                            annotations.push({
-                                name: item?.file_citation?.file_id,
-                                text: item?.text
-                            })
-                            content += ` [(${annotations.length})](#)`
-                        }
-                    })
+                    //     if( existIndex < 0 ) {
+                    //         annotations.push({
+                    //             name: item?.file_citation?.file_id,
+                    //             text: item?.text
+                    //         })
+                    //         content += ` [(${annotations.length})](#)`
+                    //     }
+                    // })
 
                     addMessage({
                         content,
-                        annotations,
-                        stream: true
+                        // annotations,
+                        stream: true,
+                        files: files?.map(({file}) => ({name: file.filename}))
                     });
                 }
 
             }
             await delay(10)
         }
-
-        streamResult += streamEvent;
     }
     addMessage({
         stream: false,

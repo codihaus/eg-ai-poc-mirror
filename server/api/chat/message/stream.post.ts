@@ -51,12 +51,14 @@ export default defineEventHandler(async (event) => {
 
     let message = "";
 
+    let files = []
 
     for await (const _event of run) {
         const payloadFE: any = {
             event: _event.event,
             data: _event.data?.delta?.content ?? {},
-            citations: []
+            citations: [],
+            files: [],
         }
 
         if (_event.data?.delta?.content) {
@@ -67,8 +69,6 @@ export default defineEventHandler(async (event) => {
             const citations = [];
 
             if (annotations) {
-                console.log(JSON.stringify(_event, null, 4))
-
                 let index = 0;
                 for (const annotation of annotations) {
                     const {file_citation} = annotation;
@@ -83,15 +83,26 @@ export default defineEventHandler(async (event) => {
                                 file: citedFile,
                                 file_id: file_citation.file_id,
                             });
+
+                            const existFile = files?.find((file) => file.file_id === file_citation?.file_id)
+
+                            if( !existFile ) {
+                                files.push({
+                                    index: (files.length) || 1, 
+                                    file: citedFile,
+                                    file_id: file_citation.file_id,
+                                })
+                            }
+                            payloadFE.data[0].text.value = payloadFE.data[0].text.value.replace(annotation.text, `**(${existFile?.index || (files.length) || 1})**`);
                         }
-                        // text.value = text.value.replace(annotation.text, ``);
                     }
                     index++;
                 }
             }
 
             payloadFE.citations = citations;
-            message += text.value;
+            payloadFE.files = files;
+            message += payloadFE.data[0].text.value;
 
             // if (annotations) {
             //     console.log(JSON.stringify({
@@ -105,8 +116,6 @@ export default defineEventHandler(async (event) => {
 
         res.write(output)
     }
-
-    console.log(message)
 
     res.write(JSON.stringify({
         event: "final",

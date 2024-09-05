@@ -11,5 +11,5 @@ export default defineEventHandler(async (event) => {
     const query = event.context.query_parsed
 
     const apiUser = event.context.api_client
-    return apiUser.request(readItems(query as never)).catch((e: any) => handleErrorsDirectus(e, ErrorReadItems))
+    return apiUser.request(readItems('chat_threads', query as never)).catch((e: any) => handleErrorsDirectus(e, ErrorReadItems))
 })
