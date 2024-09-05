@@ -39,14 +39,9 @@ const router = useRouter()
 const api = useNAD()
 const currentUser = useState('currentUser')
 
-// const conversations = ref<any>([]);
-
-
-
-
-
 
 const { data: conversations, pending, refresh } = await useAsyncData(
+    useId(),
     () => route?.params?.id && route?.params?.id !== '+' && currentUser.value?.id ? api.request(
         customEndpoint({
             method: 'GET',
@@ -64,7 +59,14 @@ const { data: conversations, pending, refresh } = await useAsyncData(
 
                 let nextMessage = get(allMessage, `${mess?.index+1}`)
 
-                let content = nextMessage?.role === 'assistant' ? get(allMessage, `${mess?.index+1}.content.0.text.value`)?.replace(/\s+$/, '') : 'Content not found'
+                let content = 'Please try again'
+
+                if( nextMessage?.role === 'assistant' ) {
+                    let contentTypes = get(allMessage, `${mess?.index+1}.content`)
+                    content = contentTypes?.map((type) => type?.text?.value).join('')?.replace(/\s+$/, '')
+                }
+
+                // content = get(allMessage, `${mess?.index+1}.content.0.text.value`)?.replace(/\s+$/, '')
                 let message = get(mess?.content, '0.text.value')?.replace(/\s+$/, '')
                 let sources = nextMessage?.role === 'assistant' ? get(allMessage, `${mess?.index+1}.files`)?.map(({file}) =>({
                     name: file.filename
@@ -182,6 +184,8 @@ async function handleSubmit(data: any) {
             });
             break;
         }
+        
+        console.log('streamEvent fileURL', streamEvent)
 
         streamEvent = destr(streamEvent)
 
@@ -208,19 +212,8 @@ async function handleSubmit(data: any) {
             if( data?.length ) {
                 
                 for(let j=0; j<data.length; j++ ) {
-                    let text = get(data[j], 'text.value')
+                    let text = get(data[j], 'text.value', '')
                     let content: string = text || ''
-                    // let annotation = get(data[j], 'text.annotations')?.map((item: any) => {
-                    //     const existIndex = annotations.findIndex((an) => an.name === item?.file_citation?.file_id)
-
-                    //     if( existIndex < 0 ) {
-                    //         annotations.push({
-                    //             name: item?.file_citation?.file_id,
-                    //             text: item?.text
-                    //         })
-                    //         content += ` [(${annotations.length})](#)`
-                    //     }
-                    // })
 
                     addMessage({
                         content,
@@ -240,15 +233,15 @@ async function handleSubmit(data: any) {
     console.log('submit', data);
     if( route.name === 'home'  ) {
         console.log('navigateTo thread', route, thread_id)
-        // await navigateTo({
-        //     name: 'chat-thread',
-        //     params: {
-        //         id: getThreadParamID(thread_id)
-        //     },
-        // }, {
-        //     replace: true
-        // })
-        window.location.href = `/thread/${getThreadParamID(thread_id)}`
+        await navigateTo({
+            name: 'chat-thread',
+            params: {
+                id: getThreadParamID(thread_id)
+            },
+        }, {
+            replace: true
+        })
+        // window.location.href = `/thread/${getThreadParamID(thread_id)}`
     }
 }
 
@@ -293,18 +286,6 @@ const _coversations = [
 
 const isHaveConversations = computed(() => {
     return conversations.value.length > 0;
-})
-
-// if( route.name === 'chat-thread' && route.params?.id === '+' ) {
-//     console.log('clear')
-//     conversations.value = []
-// }
-
-router.beforeEach((to, from, next) => {
-    if( to.name === 'chat-thread' && to.params?.id === '+' ) {
-        // conversations.value = []
-        // console.log('beforeEach', to)
-    }
 })
 
 </script>

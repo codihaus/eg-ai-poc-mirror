@@ -70,12 +70,12 @@ const MENU_SETTINGS = [
 ]
 
 async function createNewThread() {
-    // await navigateTo({
-    //     name: 'home',
-    // },
-    // // {replace: true}
-    // )
-    window.location.href = `/`
+    await navigateTo({
+        name: 'home',
+    },
+    // {replace: true}
+    )
+    // window.location.href = `/`
 }
 
 </script>

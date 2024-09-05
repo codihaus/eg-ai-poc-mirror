@@ -223,4 +223,7 @@ const themeOverrides: TypeThemeOverrides = {
     },
 };
 
+useHead({
+    title: `Discover alternate investments`
+})
 </script>

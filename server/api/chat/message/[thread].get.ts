@@ -18,46 +18,57 @@ export default defineEventHandler(async (event) => {
 
     let messages = threadMessages.data
     
-    for await (const [index, message] of threadMessages.data?.entries()) {
+    for await (const [index, message] of messages?.entries()) {
         let files = []
-        const [item] = message?.content
+        for (let indexContent = 0; indexContent < message?.content?.length; indexContent++) {
+            const item = message?.content[indexContent];
+            
+            const image_file = item?.image_file?.file_id
+            if( image_file ) {
+                let file_info = await openai.files.retrieve(image_file).catch(e => {
+                    return false;
+                })
+                if( file_info ) {
+                    const response = await openai.files.content(image_file);
+                    const bufferView = new Uint8Array(await response.arrayBuffer());
+                    const fileURI = Buffer.from(bufferView).toString('base64')
 
-        const {text} = item
-        const {annotations} = item.text
-        const citations = [];
-    
-        if (annotations) {
-            // console.log('annotations', JSON.stringify(_event, null, 4))
-
-            // let index = 0;
-            for (const annotation of annotations) {
-                const {file_citation} = annotation;
-                if (file_citation) {
-                    const citedFile = await openai.files.retrieve(file_citation.file_id).catch(e => {
-                        return false;
-                    });
-                    if (citedFile) {
-                        citedFile.filename = citedFile.filename.replace(/\.pdf$/, "");
-                        citations.push({
-                            // index,
-                            file: citedFile,
-                            file_id: file_citation.file_id,
-                        });
+                    messages[index].content[indexContent].text = {
+                        value: `<p><img src="data:image/jpg;base64,${fileURI}" /></p>`,
+                        file_info,
+                        file: fileURI
                     }
-
-                    const existFile = files?.find((file) => file.file_id === file_citation?.file_id)
-
-                    if( !existFile ) {
-                        files.push({
-                            index: (files.length) || 1, 
-                            file: citedFile,
-                            file_id: file_citation.file_id,
-                        })
-                    }
-                    set(messages, `${index}.content.0.text.value`, text?.value?.replace(annotation.text, `**(${existFile?.index || (files.length) || 1})**`))
-                    set(messages, `${index}.files`, files)
                 }
-                // index++;
+            }
+            
+            const annotations = item?.text?.annotations
+        
+            if (annotations) {
+    
+                // let index = 0;
+                for (const annotation of annotations) {
+                    const {file_citation} = annotation;
+                    if (file_citation) {
+                        const citedFile = await openai.files.retrieve(file_citation.file_id).catch(e => {
+                            return false;
+                        });
+                        if (citedFile) {
+                            citedFile.filename = citedFile.filename.replace(/\.pdf$/, "");
+                        }
+    
+                        const existFile = files?.find((file) => file.file_id === file_citation?.file_id)
+    
+                        if( !existFile ) {
+                            files.push({
+                                index: (files.length) || 1, 
+                                file: citedFile,
+                                file_id: file_citation.file_id,
+                            })
+                        }
+                        set(messages, `${index}.content.${indexContent}.text.value`, item?.text?.value?.replace(annotation.text, `**(${existFile?.index || (files.length) || 1})**`))
+                        set(messages, `${index}.files`, files)
+                    }
+                }
             }
         }
     }

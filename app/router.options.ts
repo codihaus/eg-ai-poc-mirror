@@ -7,7 +7,7 @@ export default {
         {
             name: "home",
             path: "/",
-            component: () => import('~/app/views/home/chat-thread.vue').then((r: any) => r.default || r)
+            component: () => import('~/app/views/home/index.vue').then((r: any) => r.default || r)
         },
         {
             name: "chat-thread",

@@ -12,4 +12,6 @@ import ContentChat from './components/content-chat.vue';
 definePageMeta({
     layout: 'none',
 });
+
+const route = useRoute()
 </script>
