@@ -1,3 +1,5 @@
+import { set } from 'lodash-es'
+
 export default defineEventHandler(async (event) => {
     const body = await readBody(event);
     const res = event.node.res
@@ -54,55 +56,77 @@ export default defineEventHandler(async (event) => {
     let files = []
 
     for await (const _event of run) {
-        const payloadFE: any = {
+
+        let content = _event.data?.delta?.content || []
+
+        let payloadFE: any = {
             event: _event.event,
-            data: _event.data?.delta?.content ?? {},
+            data: content ?? {},
             citations: [],
             files: [],
         }
 
-        if (_event.data?.delta?.content) {
-            const [item] = _event.data?.delta?.content
-
-            const {text} = item
-            const {annotations} = item.text
+        if (content) {
             const citations = [];
 
-            if (annotations) {
-                let index = 0;
-                for (const annotation of annotations) {
-                    const {file_citation} = annotation;
-                    if (file_citation) {
-                        const citedFile = await openai.files.retrieve(file_citation.file_id).catch(e => {
-                            return false;
-                        });
-                        if (citedFile) {
-                            citedFile.filename = citedFile.filename.replace(/\.pdf$/, "");
-                            citations.push({
-                                index,
-                                file: citedFile,
-                                file_id: file_citation.file_id,
+            for await (const [index, item] of content?.entries()) {
+                
+                // console.log('item', JSON.stringify(item, null, 4))
+                
+                const image_file = item?.image_file?.file_id
+
+                if( image_file ) {
+                    const file_info = await openai.files.retrieve(image_file).catch(e => {
+                        return false;
+                    })
+                    if( file_info ) {
+                        const response = await openai.files.content(image_file);
+                        const bufferView = new Uint8Array(await response.arrayBuffer());
+                        const fileURI = Buffer.from(bufferView).toString('base64')
+
+                        set(payloadFE.data, `${index}.file_url`, fileURI)
+                        
+                        console.log('payloadFE', JSON.stringify(payloadFE.data, null, 4))
+                    }
+                }
+                
+                const annotations = item?.text?.annotations
+
+                if (annotations) {
+                    for (const annotation of annotations) {
+                        const {file_citation} = annotation;
+                        if (file_citation) {
+                            const citedFile = await openai.files.retrieve(file_citation.file_id).catch(e => {
+                                return false;
                             });
-
-                            const existFile = files?.find((file) => file.file_id === file_citation?.file_id)
-
-                            if( !existFile ) {
-                                files.push({
-                                    index: (files.length) || 1, 
-                                    file: citedFile,
-                                    file_id: file_citation.file_id,
-                                })
+                            if (citedFile) {
+                                citedFile.filename = citedFile.filename.replace(/\.pdf$/, "");
+                                // citations.push({
+                                //     index,
+                                //     file: citedFile,
+                                //     file_id: file_citation.file_id,
+                                // });
+    
+                                const existFile = files?.find((file) => file.file_id === file_citation?.file_id)
+    
+                                if( !existFile ) {
+                                    files.push({
+                                        index: (files.length) || 1, 
+                                        file: citedFile,
+                                        file_id: file_citation.file_id,
+                                    })
+                                }
+                                // payloadFE.data[index].text.value = payloadFE.data[index].text.value.replace(annotation.text, `**(${existFile?.index || (files.length) || 1})**`);
                             }
-                            payloadFE.data[0].text.value = payloadFE.data[0].text.value.replace(annotation.text, `**(${existFile?.index || (files.length) || 1})**`);
                         }
                     }
-                    index++;
                 }
             }
 
-            payloadFE.citations = citations;
+
+            // payloadFE.citations = citations;
             payloadFE.files = files;
-            message += payloadFE.data[0].text.value;
+            message += payloadFE.data?.filter((item) => item?.text)?.map((item) => item.text.value);
 
             // if (annotations) {
             //     console.log(JSON.stringify({
