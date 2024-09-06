@@ -77,6 +77,7 @@ export default defineEventHandler(async (event) => {
 
     return {
         statusCode: 200,
-        messages
+        messages,
+        rawMessages: threadMessages.data
     }
 })
