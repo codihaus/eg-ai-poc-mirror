@@ -39,6 +39,7 @@ const router = useRouter()
 const api = useNAD()
 const currentUser = useState('currentUser')
 const AIStreaming = useState('AIStreaming', () => false)
+const searchProductKey = useState('searchProductKey')
 
 const { data: conversations, pending, refresh } = await useAsyncData(
     useId(),
@@ -121,6 +122,7 @@ function addMessage(data) {
 async function handleSubmit(data: any) {
 
     AIStreaming.value = true
+    searchProductKey.value = null
 
     addMessage(data)
     let content = data?.message

@@ -10,7 +10,7 @@
 
     </ul> -->
     <n-collapse class="search-accordion" accordion @item-header-click="clickHeader">
-        <n-collapse-item v-for="productType in listProductTypes" :title="productType?.title" :name="productType?.id" :disabled="loadingKeyword">
+        <n-collapse-item v-for="productType in listProductTypes" :title="productType?.title" :name="productType?.id" :disabled="loadingKeyword || AIStreaming">
             <template #arrow>
                 <div :class="productType?.icon" class="text-xl"></div>
             </template>
@@ -48,6 +48,8 @@ import { get } from 'lodash-es'
 const route = useRoute()
 
 const { getAssetUrl } = useNADUrl()
+
+const AIStreaming = useState('AIStreaming', () => false)
 
 const listProductTypes = [
     {
@@ -96,7 +98,7 @@ const { data: products, pending, refresh: searchProducts } = await useAsyncData(
 async function clickHeader({name, expanded, event}) {
 
     loadingKeyword.value = true
-    const keyword = await api.request(
+    const keyword = searchProductKey.value || await api.request(
         customEndpoint({
             method: 'POST',
             path: `/chat/message/`,
@@ -104,16 +106,16 @@ async function clickHeader({name, expanded, event}) {
                 thread_id: getThreadID(route?.params?.id),
                 role: 'assistant',
                 type: 'search',
-                content: 'summary last content as a keyword and return just one keyword'
+                content: 'summary last content as a keyword and return just one keyword, plain text without format'
             })
         })
     ).then((res) => get(res.reply, '0.text.value')).catch(() => {
-        searchProductKey.value = null
         return false
     }).finally(() => {
         loadingKeyword.value = false
     })
-    
+
+    loadingKeyword.value = false
     productType.value = name
     searchProductKey.value = keyword
 
@@ -127,7 +129,7 @@ function viewMore(slug) {
 </script>
 <style lang="scss">
 .n-collapse.search-accordion {
-    --n-title-padding: 8px 16px;
+    --n-title-padding: 0;
     --n-item-margin: 8px 0 0 0;
     .n-collapse-item:not(:first-child) {
         border-top: 0;
@@ -135,9 +137,18 @@ function viewMore(slug) {
     .n-collapse-item__header {
         border-radius: 4px;
         border: 1px dashed #E1E5EA;
+        &:hover {
+            border: 1px dashed #6E41E2;
+        }
+        .n-collapse-item__header-main {
+            padding: 8px 0 8px 16px;
+        }
+        .n-collapse-item__header-extra {
+            padding: 8px 16px 8px 0;
+        }
     }
     .n-collapse-item:first-child > .n-collapse-item__header {
-        padding-top: 8px;
+        // padding-top: 8px;
     }
 }
 </style>
