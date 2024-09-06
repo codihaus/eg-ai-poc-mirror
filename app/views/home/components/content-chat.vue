@@ -42,6 +42,8 @@ const AIStreaming = useState('AIStreaming', () => false)
 const searchProductKey = useState('searchProductKey')
 const newData = useState('newThreadData')
 const disabledSearch = ref(true)
+const lastUserMessage = useState('lastUserMessage')
+
 
 const { data: conversations, pending, refresh } = await useAsyncData(
     useId(),
@@ -82,6 +84,7 @@ const { data: conversations, pending, refresh } = await useAsyncData(
                 let parsedMessage = message?.toLowerCase()
 
                 if( isEnabledSearch(parsedMessage, mess.role) ) {
+                    console.log('chat isEnabledSearch')
                     disabledSearch.value = false
                 }
                 
@@ -94,6 +97,8 @@ const { data: conversations, pending, refresh } = await useAsyncData(
                     id: mess?.id
                 }
             })
+
+            lastUserMessage.value = last(output)?.message
             
             if( route.params?.id && route.params?.id !== '+' ) {
                 return output?.length ? output : []
@@ -108,16 +113,9 @@ console.log('newData.value', newData.value)
 if( newData.value?.message ) {
     addMessage({...newData.value})
     await delay(100)
+    lastUserMessage.value = newData.value?.message
     stream(newData.value?.message, getThreadID(route?.params?.id))
 }
-
-const lastUserMessage = useState('lastUserMessage')
-watch(conversations, (newVal, old) => {
-    let userMessages = conversations.value?.filter((message) => message.role === 'user')
-    lastUserMessage.value = last(userMessages)?.message
-    // disabledSearch.value = conversations.value?.findIndex((conversation) => conversation?.message?.toLowerCase()?.includes('fine arts')) < 0
-    console.log('disabledSearch.value', disabledSearch.value, newVal, old)
-})
 
 function addMessage(data) {
     console.log(data)
@@ -200,16 +198,13 @@ async function handleSubmit(data: any) {
 
     await stream(userMessages, thread_id)
 
-    if( route?.params?.id && isEnabledSearch(userMessages) ) {
-        disabledSearch.value = false
-    }
-
     console.log('submit', data);
     
     
 }
 
 async function stream(content, thread_id) {
+    let userMessages = content
     AIStreaming.value = true
     let response = await $fetch(`/api/chat/message/stream`, {
         method: 'post',
@@ -250,6 +245,7 @@ async function stream(content, thread_id) {
                 type: 'message',
                 content: 'Failed to process your request. Please try again!',
             });
+            AIStreaming.value = false
             newData.value = null
             break;
         }
@@ -275,6 +271,7 @@ async function stream(content, thread_id) {
                 addMessage({
                     content: 'Failed to process your request. Please try again!',
                 });
+                AIStreaming.value = false
                 newData.value = null
                 break;
             }
@@ -303,6 +300,12 @@ async function stream(content, thread_id) {
 
     AIStreaming.value = false
     newData.value = null
+
+    console.log('isEnabledSearch(userMessages)', isEnabledSearch(userMessages))
+
+    if( route?.params?.id && isEnabledSearch(userMessages) ) {
+        disabledSearch.value = false
+    }
 }
 
 const isHaveConversations = computed(() => {

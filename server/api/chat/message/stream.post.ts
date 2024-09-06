@@ -1,3 +1,5 @@
+import { delay } from "~/utils/delay";
+
 export default defineEventHandler(async (event) => {
     const body = await readBody(event);
     const res = event.node.res
@@ -54,6 +56,7 @@ export default defineEventHandler(async (event) => {
     let files = []
 
     for await (const _event of run) {
+        await delay(100)
         const payloadFE: any = {
             event: _event.event,
             data: _event.data?.delta?.content ?? {},
