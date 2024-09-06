@@ -185,6 +185,7 @@ async function handleSubmit(data: any) {
         let streamEvent = decoder.decode(value, { stream: true })
         
         streamEvent = streamEvent?.startsWith(',') ? streamEvent?.substring(1) : streamEvent
+        streamEvent = streamEvent.replaceAll('}{"event"', '},{"event"')
         streamEvent = `[${streamEvent}]`
 
         if( streamEvent?.includes('thread.run.failed') ) {
