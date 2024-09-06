@@ -20,13 +20,12 @@ Content-Type: application/json
 }
 
 ### Create Message Stream
-POST {{api}}/api/chat/message/stream
+POST http://localhost:3000/api/chat/message/stream
 Content-Type: application/json
 
 {
-    "assistant_id": "{{assistant_id}}",
-    "thread_id": "thread_lW9qgEISUQ9rIs36zoW5boF3",
-    "content": "What are the code requirements for installing electrical outlets?"
+    "thread_id": "thread_j9mhZqQCwhwT2BOBRJtCvgBk",
+    "content": "why inox 304 use for food"
 }
 
 ### Get Message Detail

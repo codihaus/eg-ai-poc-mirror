@@ -43,7 +43,7 @@ export default defineEventHandler(async (event) => {
     const threadMessages = await openai.beta.threads.messages.create(
         body.thread_id,
         {
-            role: "user",
+            role: body?.role || "user",
             content: body.content
         }
     );

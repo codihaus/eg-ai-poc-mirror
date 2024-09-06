@@ -1,5 +1,5 @@
 <template>
-    <form @submit.prevent="handleSubmit" ref="formRef" :class="{ 'bg-base-100/80': isFocus }" class='p-2  bg-base-50 rounded-xl duration-100'>
+    <form @submit.prevent="handleSubmit" ref="formRef" :class="{ 'bg-base-100/80': isFocus }" class='py-2 px-3  bg-base-50 rounded-xl duration-100'>
         <!-- <ContnetChatDisplayFiles v-if="dataForm['files']?.length" :files="dataForm['files']" @onRemoveFile="hanldeRemoveFile" class="mb-6" /> -->
         <div class="flex items-end gap-1">
             <!-- <ContentChatInputFile @onChangeFile="onChangeFile" /> -->
