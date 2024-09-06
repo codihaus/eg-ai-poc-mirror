@@ -18,7 +18,7 @@
                 <div class="text-xl i-custom-arrow-right text-primary"></div>
             </template>
             <div class="p-4 bg-base-50 rounded-xl">
-                <div v-if="products.length < 1 && !pending && ! loadingKeyword" class="">
+                <div v-if="products?.length < 1 && !pending && ! loadingKeyword" class="">
                     Not found item!
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -33,7 +33,7 @@
                         </div>
                     </template>
                 </div>
-                <n-button v-if="products.length > 0 && !pending && ! loadingKeyword" block class="mt-4" @click="viewMore(productType?.slug)">
+                <n-button v-if="products?.length > 0 && !pending && ! loadingKeyword" block class="mt-4" @click="viewMore(productType?.slug)">
                     View more
                 </n-button>
             </div>
