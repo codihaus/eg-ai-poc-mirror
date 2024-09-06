@@ -38,7 +38,7 @@ const route = useRoute()
 const router = useRouter()
 const api = useNAD()
 const currentUser = useState('currentUser')
-
+const AIStreaming = useState('AIStreaming', () => false)
 
 const { data: conversations, pending, refresh } = await useAsyncData(
     useId(),
@@ -120,6 +120,7 @@ function addMessage(data) {
 
 async function handleSubmit(data: any) {
 
+    AIStreaming.value = true
 
     addMessage(data)
     let content = data?.message
@@ -230,6 +231,9 @@ async function handleSubmit(data: any) {
     addMessage({
         stream: false,
     })
+
+    AIStreaming.value = false
+
     console.log('submit', data);
     if( route.name === 'home'  ) {
         console.log('navigateTo thread', route, thread_id)
@@ -244,45 +248,6 @@ async function handleSubmit(data: any) {
         // window.location.href = `/thread/${getThreadParamID(thread_id)}`
     }
 }
-
-const _coversations = [
-    {
-        sender: {
-            name: "User Engram AI",
-            avatar: "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg"
-        },
-        message: "Top landscape photographers awarded globally in 2024.",
-        sources: [],
-        date: "20:22",
-        type: "text",
-        content: `...`
-    },
-    // {
-    //     sender: {
-    //         name: "User Engram AI",
-    //         avatar: "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg"
-    //     },
-    //     message: "Top landscape photographers awarded globally in 2024.",
-    //     sources: [
-    //         {
-    //             name: "PetaPixel",
-    //             link: "https://petapixel.com/2024/01/01/top-landscape-photographers-awarded-globally-in-2024/"
-    //         },
-    //         {
-    //             name: "Fstoppers",
-    //             link: "https://fstoppers.com/2024/01/01/top-landscape-photographers-awarded-globally-in-2024-2/"
-    //         },
-    //         {
-    //             name: "Digital Photography Review",
-    //             link: "https://dpreview.com/2024/01/01/top-landscape-photographers-awarded-globally-in-2024-3/"
-    //         }
-    //     ],
-    //     date: "20:22",
-    //     type: "text",
-    //     content: `<p>As our chart isHaveConversationss, a total of six states have enacted right-to-repair laws so far, with five doing so in the past three years. Colorado established the first of these bills in 2022 concerning wheelchair repairs. Another bill expanded this right to agricultural equipment, the most common sector targeted in right-to-repair legislation next to consumer electronics, in 2023, according to the <a href="https://www.ncsl.org/technology-and-communication/right-to-repair-2023-legislation" target="_blank">National Conference of State Legislatures</a>. </p>`
-    // }
-]
-
 
 const isHaveConversations = computed(() => {
     return conversations.value.length > 0;

@@ -6,7 +6,7 @@
             <NInput v-model:value="dataForm['message']" placeholder="Ask follow-up" type="textarea" @focus="isFocus = true" @keydown="handleKeydown"
                 :autosize="{ minRows: 1, maxRows: 10 }" />
 
-            <button type='submit' :class="{ 'text-white bg-base-900': isHasValue }"
+            <button type='submit' :class="{ 'text-white bg-base-900': isHasValue && !AIStreaming }"
                 class="p-2 rounded-full bg-base-50 hover:(text-white bg-base-900) duration-100">
                 <div class='i-custom-arrow-right size-5'></div>
             </button>
@@ -27,6 +27,7 @@ interface FormData {
     files: File[] | any;
 }
 
+const AIStreaming = useState('AIStreaming', () => false)
 
 onClickOutside(formRef, () => {
     isFocus.value = false;
@@ -55,7 +56,7 @@ const handleKeydown = (e: KeyboardEvent) => {
 };
 
 const handleSubmit = () => {
-    if (isHasValue.value) {
+    if (isHasValue.value && AIStreaming.value !== true) {
         emit('onSubmit', dataForm.value);
         dataForm.value.message = '';
     }
