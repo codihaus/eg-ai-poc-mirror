@@ -75,6 +75,7 @@ const { data: conversations, pending, refresh } = await useAsyncData(
                 
                 return {
                     type: 'text',
+                    role: mess?.role,
                     message,
                     sources,
                     content,
@@ -90,6 +91,13 @@ const { data: conversations, pending, refresh } = await useAsyncData(
         default: () => []
 	}
 )
+
+const lastUserMessage = useState('lastUserMessage')
+
+watch(conversations, () => {
+    let userMessages = conversations.value?.filter((message) => message.role === 'user')
+    lastUserMessage.value = last(userMessages)?.message
+})
 
 function addMessage(data) {
     console.log(data)

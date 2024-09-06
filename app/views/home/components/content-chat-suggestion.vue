@@ -95,7 +95,11 @@ const { data: products, pending, refresh: searchProducts } = await useAsyncData(
     }
 )
 
+const lastUserMessage = useState('lastUserMessage')
+
 async function clickHeader({name, expanded, event}) {
+
+    console.log('lastUserMessage.value', lastUserMessage.value)
 
     loadingKeyword.value = true
     const keyword = searchProductKey.value || await api.request(
@@ -106,7 +110,7 @@ async function clickHeader({name, expanded, event}) {
                 thread_id: getThreadID(route?.params?.id),
                 role: 'assistant',
                 type: 'search',
-                content: 'summary last content as a keyword and return just one keyword, plain text without format'
+                content: lastUserMessage.value
             })
         })
     ).then((res) => get(res.reply, '0.text.value')).catch(() => {

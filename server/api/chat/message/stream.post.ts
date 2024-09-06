@@ -113,7 +113,7 @@ export default defineEventHandler(async (event) => {
         }
 
         let output = payloadFE.event === 'thread.run.created' ? JSON.stringify(payloadFE) : ',' + JSON.stringify(payloadFE)
-
+        output = output.replaceAll('}{"event"', '},{"event"')
         res.write(output)
     }
 
