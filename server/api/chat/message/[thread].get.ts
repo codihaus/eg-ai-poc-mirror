@@ -73,6 +73,8 @@ export default defineEventHandler(async (event) => {
         }
     }
 
+    messages = messages.filter((message) => message.assistant_id !== process.env.OPENAI_SEARCH_ASSISTANT_ID)
+
     return {
         statusCode: 200,
         messages

@@ -49,7 +49,7 @@ export default defineEventHandler(async (event) => {
     );
 
     const run = await openai.beta.threads.runs.create(body.thread_id, {
-        assistant_id: assistant_id,
+        assistant_id: body?.type === 'search' ? process.env.OPENAI_SEARCH_ASSISTANT_ID : assistant_id,
     })
 
     await checkRun(openai, body.thread_id, run)

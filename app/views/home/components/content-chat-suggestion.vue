@@ -10,7 +10,7 @@
 
     </ul> -->
     <n-collapse class="search-accordion" accordion @item-header-click="clickHeader">
-        <n-collapse-item v-for="productType in listProductTypes" :title="productType?.title" :name="productType?.id">
+        <n-collapse-item v-for="productType in listProductTypes" :title="productType?.title" :name="productType?.id" :disabled="loadingKeyword">
             <template #arrow>
                 <div :class="productType?.icon" class="text-xl"></div>
             </template>
@@ -18,7 +18,24 @@
                 <div class="text-xl i-custom-arrow-right text-primary"></div>
             </template>
             <div class="p-4 bg-base-50 rounded-xl">
-                <img src="" alt="">
+                <div v-if="products.length < 1 && !pending && ! loadingKeyword" class="">
+                    Not found item!
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    <template v-if="pending || loadingKeyword">
+                        <div v-for="(item, index) in new Array(4).fill({})" :class="{'col-span-3': index === 0}">
+                            <n-skeleton :sharp="false" class="min-h-14"></n-skeleton>
+                        </div>
+                    </template>
+                    <template v-else>
+                        <div v-for="(item, index) in products" :key="item.id" :class="{'col-span-3': index === 0}">
+                            <img :src="getAssetUrl(`${item?.thumbnail?.id}/${item?.thumbnail?.filename_download}`)" class="rounded">
+                        </div>
+                    </template>
+                </div>
+                <n-button v-if="products.length > 0 && !pending && ! loadingKeyword" block class="mt-4" @click="viewMore(productType?.slug)">
+                    View more
+                </n-button>
             </div>
         </n-collapse-item>
     </n-collapse>
@@ -26,8 +43,11 @@
 
 <script setup lang='ts'>
 import { customEndpoint } from '@directus/sdk'
+import { get } from 'lodash-es'
 
 const route = useRoute()
+
+const { getAssetUrl } = useNADUrl()
 
 const listProductTypes = [
     {
@@ -36,16 +56,6 @@ const listProductTypes = [
         icon: 'i-custom-image',
         id: 8
     },
-    // {
-    //     title: 'Search Stock videos',
-    //     link: '#',
-    //     icon: 'i-custom-video',
-    // },
-    // {
-    //     title: 'Search Video template',
-    //     link: '#',
-    //     icon: 'i-custom-video-template',
-    // },
     {
         title: 'Graphic',
         slug: 'graphic',
@@ -65,36 +75,53 @@ const listProductTypes = [
         id: 7
     }
 ]
-
+const loadingKeyword = ref(false)
 const productType = ref(0)
 const searchProductKey = useState('searchProductKey')
 
 const api = useNAD()
 
 const { data: products, pending, refresh: searchProducts } = await useAsyncData(
-    () => productType.value > 0 ? api.request(customEndpoint({
+    () => productType.value > 0 && !!searchProductKey.value ? api.request(customEndpoint({
         method: 'GET',
-        path: `/eg-resources/products?search_text=${searchProductKey.value}&sort_by=[["date_created","asc"]]&status=[["neq","archived"], ["eq", "published"]]&type=[["eq", ${productType.value}]]&metadata={"pixel_dimension":"1024x768"}&page=1&limit=5`
+        path: `/eg-resources/products?search=${searchProductKey.value}&type=${productType.value}`
     })) : {},
     {
+        default: () => [],
+        transform: (response) => response?.items,
         watch: [productType, searchProductKey]
     }
 )
 
 async function clickHeader({name, expanded, event}) {
-    // productType.value = name
-    // await searchProducts()
-    await api.request(
+
+    loadingKeyword.value = true
+    const keyword = await api.request(
         customEndpoint({
             method: 'POST',
             path: `/chat/message/`,
             body: JSON.stringify({
                 thread_id: getThreadID(route?.params?.id),
                 role: 'assistant',
-                content: 'summary content to '
+                type: 'search',
+                content: 'summary last content as a keyword and return just one keyword'
             })
         })
-    )
+    ).then((res) => get(res.reply, '0.text.value')).catch(() => {
+        searchProductKey.value = null
+        return false
+    }).finally(() => {
+        loadingKeyword.value = false
+    })
+    
+    productType.value = name
+    searchProductKey.value = keyword
+
+    console.log('keyword', keyword)
+}
+
+function viewMore(slug) {
+    window.location.href = `https://dev.scvengram.com/assets/${slug}?text=${searchProductKey.value}&sort=date_created`
 }
 
 </script>
