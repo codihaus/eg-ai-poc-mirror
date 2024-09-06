@@ -9,36 +9,45 @@
         </li>
 
     </ul> -->
-    <n-collapse class="search-accordion" accordion @item-header-click="clickHeader">
-        <n-collapse-item v-for="productType in listProductTypes" :title="productType?.title" :name="productType?.id" :disabled="loadingKeyword || AIStreaming">
-            <template #arrow>
-                <div :class="productType?.icon" class="text-xl"></div>
-            </template>
-            <template #header-extra>
-                <div class="text-xl i-custom-arrow-right text-primary"></div>
-            </template>
-            <div class="p-4 bg-base-50 rounded-xl">
-                <div v-if="products?.length < 1 && !pending && ! loadingKeyword" class="">
-                    Not found item!
+    <n-scrollbar>
+        <n-collapse class="search-accordion" accordion @item-header-click="clickHeader">
+            <n-collapse-item v-for="productType in listProductTypes" :title="productType?.title" :name="productType?.id" :disabled="loadingKeyword || AIStreaming">
+                <template #arrow>
+                    <div :class="productType?.icon" class="text-xl"></div>
+                </template>
+                <template #header-extra>
+                    <div class="text-xl i-custom-arrow-right text-primary"></div>
+                </template>
+                <div class="p-4 bg-base-50 rounded-xl">
+                    <n-image-group>
+                    <div v-if="products?.length < 1 && !pending && ! loadingKeyword" class="">
+                        Not found item!
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                        <template v-if="pending || loadingKeyword">
+                            <div v-for="(item, index) in new Array(4).fill({})" :class="{'col-span-3': index === 0}">
+                                <n-skeleton :sharp="false" class="min-h-14"></n-skeleton>
+                            </div>
+                        </template>
+                        <template v-else>
+                            <div v-for="(item, index) in products" :key="item.id">
+                                <!-- <img :src="getAssetUrl(`${item?.thumbnail?.id}/${item?.thumbnail?.filename_download}`)" class="rounded"> -->
+                                <n-image
+                                    class="h-full object-cover"
+                                    rounded
+                                    :src="getAssetUrl(`${item?.thumbnail?.id}/${item?.thumbnail?.filename_download}/?width=300&height=300&fit=cover`)"
+                                />
+                            </div>
+                        </template>
+                    </div>
+                    </n-image-group>
+                    <n-button v-if="products?.length > 0 && !pending && ! loadingKeyword" block class="mt-4" @click="viewMore(productType?.slug)">
+                        View more
+                    </n-button>
                 </div>
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                    <template v-if="pending || loadingKeyword">
-                        <div v-for="(item, index) in new Array(4).fill({})" :class="{'col-span-3': index === 0}">
-                            <n-skeleton :sharp="false" class="min-h-14"></n-skeleton>
-                        </div>
-                    </template>
-                    <template v-else>
-                        <div v-for="(item, index) in products" :key="item.id" :class="{'col-span-3': index === 0}">
-                            <img :src="getAssetUrl(`${item?.thumbnail?.id}/${item?.thumbnail?.filename_download}`)" class="rounded">
-                        </div>
-                    </template>
-                </div>
-                <n-button v-if="products?.length > 0 && !pending && ! loadingKeyword" block class="mt-4" @click="viewMore(productType?.slug)">
-                    View more
-                </n-button>
-            </div>
-        </n-collapse-item>
-    </n-collapse>
+            </n-collapse-item>
+        </n-collapse>
+    </n-scrollbar>
 </template>
 
 <script setup lang='ts'>
@@ -90,7 +99,7 @@ const { data: products, pending, refresh: searchProducts } = await useAsyncData(
     })) : {},
     {
         default: () => [],
-        transform: (response) => response?.items,
+        transform: (response) => response,
         watch: [productType, searchProductKey]
     }
 )
