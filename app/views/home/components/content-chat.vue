@@ -56,10 +56,7 @@ const { data: conversations, pending, refresh } = await useAsyncData(
             console.log('response', response)
             let allMessage = (response?.messages || [])?.sort((a, b) => a.created_at - b.created_at)?.map((item,index) => ({...item, index}))
             let output = allMessage?.filter((mess) => {
-                if( mess.role === 'user' && get(mess?.content, '0.text.value')?.toLowerCase()?.includes('fine arts') ) {
-                    disabledSearch.value = false
-                    console.log('disabledSearch.value', disabledSearch.value)
-                }
+                
                 return mess.role === 'user'
             })?.map((mess, index) => {
 
@@ -78,7 +75,12 @@ const { data: conversations, pending, refresh } = await useAsyncData(
                     name: file.filename
                 })) : []
 
-                
+                let parsedMessage = message?.toLowerCase()
+
+                if( mess.role === 'user' && parsedMessage?.includes('fine art') || parsedMessage?.includes('fineart') ) {
+                    disabledSearch.value = false
+                    console.log('disabledSearch.value', disabledSearch.value)
+                }
                 
                 return {
                     type: 'text',
