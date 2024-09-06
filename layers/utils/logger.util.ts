@@ -24,15 +24,6 @@ export const Logger = () => {
         redact: {
             paths: [],
             remove: false
-        },
-        transport: {
-            target: 'pino-pretty',
-            options: {
-                colorize: true,
-                ignore: 'pid,hostname',
-                messageFormat: false,
-                translateTime: "yyyy-mm-dd HH:MM:ss.l",
-            }
         }
     })
 }
