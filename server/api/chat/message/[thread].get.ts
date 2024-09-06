@@ -65,7 +65,7 @@ export default defineEventHandler(async (event) => {
                                 file_id: file_citation.file_id,
                             })
                         }
-                        set(messages, `${index}.content.${indexContent}.text.value`, item?.text?.value?.replace(annotation.text, `**(${existFile?.index || (files.length) || 1})**`))
+                        set(messages, `${index}.content.${indexContent}.text.value`, item?.text?.value?.replace(annotation.text, ` **(${existFile?.index || (files.length) || 1})** `))
                         set(messages, `${index}.files`, files)
                     }
                 }

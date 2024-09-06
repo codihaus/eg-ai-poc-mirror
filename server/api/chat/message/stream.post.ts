@@ -93,7 +93,7 @@ export default defineEventHandler(async (event) => {
                                     file_id: file_citation.file_id,
                                 })
                             }
-                            payloadFE.data[0].text.value = payloadFE.data[0].text.value.replace(annotation.text, `**(${existFile?.index || (files.length) || 1})**`);
+                            payloadFE.data[0].text.value = payloadFE.data[0].text.value.replace(annotation.text, ` **(${existFile?.index || (files.length) || 1})** `);
                         }
                     }
                     index++;
