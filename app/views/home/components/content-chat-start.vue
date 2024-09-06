@@ -6,6 +6,12 @@
                 Learn more about fine arts, movies, music and youtubers
             </div>
         </div>
+        <div class="grid grid-cols-3 gap-6 text-base-900 mt-10">
+            <div v-for="(item) in suggestions" :key="item?.text" class="p-4 bg-white shadow-xl rounded-lg cursor-pointer hover:bg-primary hover:text-white" @click="submitSuggestion(item)">
+                <div class="text-2xl text-center">{{ item?.text }}</div>
+                <div></div>
+            </div>
+        </div>
         <ContentChatStartInput @on-submit="handleSubmit" class="mt-10 mx-auto max-w-3xl" />
     </div>
 </template>
@@ -17,8 +23,26 @@ const emit = defineEmits<{
     onSubmit: [any];
 }>();
 
+const suggestions = ref([
+    {
+        text: 'Music industry'
+    },
+    {
+        text: 'Fine arts'
+    },
+    {
+        text: 'Youtubers'
+    },
+])
+
 function handleSubmit(data: any) {
     // console.log('submit', data);
     emit('onSubmit', data);
+}
+
+function submitSuggestion(item) {
+    emit('onSubmit', {
+        message: `Tell me more about the ${item?.text} and what returns can i expect`
+    });
 }
 </script>
