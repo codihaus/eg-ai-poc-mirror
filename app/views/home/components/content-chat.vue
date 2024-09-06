@@ -40,6 +40,7 @@ const api = useNAD()
 const currentUser = useState('currentUser')
 const AIStreaming = useState('AIStreaming', () => false)
 const searchProductKey = useState('searchProductKey')
+const newData = useState('newThreadData')
 const disabledSearch = ref(true)
 
 const { data: conversations, pending, refresh } = await useAsyncData(
@@ -55,6 +56,9 @@ const { data: conversations, pending, refresh } = await useAsyncData(
 		transform: (response) => {
             console.log('response', response)
             let allMessage = (response?.messages || [])?.sort((a, b) => a.created_at - b.created_at)?.map((item,index) => ({...item, index}))
+
+            
+
             let output = allMessage?.filter((mess) => {
                 
                 return mess.role === 'user'
@@ -100,6 +104,13 @@ const { data: conversations, pending, refresh } = await useAsyncData(
 	}
 )
 
+console.log('newData.value', newData.value)
+if( newData.value?.message ) {
+    addMessage({...newData.value})
+    await delay(100)
+    stream(newData.value?.message, getThreadID(route?.params?.id))
+}
+
 const lastUserMessage = useState('lastUserMessage')
 watch(conversations, (newVal, old) => {
     let userMessages = conversations.value?.filter((message) => message.role === 'user')
@@ -140,6 +151,8 @@ async function handleSubmit(data: any) {
 
     AIStreaming.value = true
     searchProductKey.value = null
+    newData.value = {...data}
+    console.log('newData.value', newData.value)
     const userMessages = data?.message
 
     console.log('userMessages', userMessages)
@@ -162,12 +175,42 @@ async function handleSubmit(data: any) {
 
         thread_id = createdThread?.thread?.id;
         // refreshRecentThreads.value = true
+
+        // if( route.name === 'home'  ) {
+
+        //     await delay(500)
+
+        
+        // }
+        console.log('navigateTo thread', route, thread_id)
+        return navigateTo({
+            name: 'chat-thread',
+            params: {
+                id: getThreadParamID(thread_id)
+            },
+        })
     }
 
     // const { data: createdMessage } = await useAsyncData(async () => {
 
     //     // return streamResult;
     // })
+
+    console.log('beforestream')
+
+    await stream(userMessages, thread_id)
+
+    if( route?.params?.id && isEnabledSearch(userMessages) ) {
+        disabledSearch.value = false
+    }
+
+    console.log('submit', data);
+    
+    
+}
+
+async function stream(content, thread_id) {
+    AIStreaming.value = true
     let response = await $fetch(`/api/chat/message/stream`, {
         method: 'post',
         responseType: 'stream',
@@ -182,9 +225,10 @@ async function handleSubmit(data: any) {
             content: 'Failed to process your request. Please try again!',
             stream: false
         });
+        newData.value = null
         
     })
-    const reader = response.getReader();
+    const reader = response?.getReader();
     const decoder = new TextDecoder('utf-8');
     let streamResult = '';
 
@@ -192,7 +236,7 @@ async function handleSubmit(data: any) {
     let contents = ''
 
     while (true) {
-        const { done, value } = await reader.read();
+        const { done, value } = await reader?.read();
         if (done) break;
         let streamEvent = decoder.decode(value, { stream: true })
         
@@ -206,6 +250,7 @@ async function handleSubmit(data: any) {
                 type: 'message',
                 content: 'Failed to process your request. Please try again!',
             });
+            newData.value = null
             break;
         }
         
@@ -230,6 +275,7 @@ async function handleSubmit(data: any) {
                 addMessage({
                     content: 'Failed to process your request. Please try again!',
                 });
+                newData.value = null
                 break;
             }
 
@@ -256,25 +302,7 @@ async function handleSubmit(data: any) {
     })
 
     AIStreaming.value = false
-
-    console.log('route?.params?.id && isEnabledSearch(userMessages)', userMessages, userMessages?.includes('fine art') || userMessages?.includes('fineart'), isEnabledSearch(userMessages))
-    if( route?.params?.id && isEnabledSearch(userMessages) ) {
-        disabledSearch.value = false
-    }
-
-    console.log('submit', data);
-    if( route.name === 'home'  ) {
-        console.log('navigateTo thread', route, thread_id)
-        await navigateTo({
-            name: 'chat-thread',
-            params: {
-                id: getThreadParamID(thread_id)
-            },
-        }, {
-            replace: true
-        })
-        // window.location.href = `/thread/${getThreadParamID(thread_id)}`
-    }
+    newData.value = null
 }
 
 const isHaveConversations = computed(() => {
