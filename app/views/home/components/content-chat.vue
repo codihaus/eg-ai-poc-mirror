@@ -77,9 +77,8 @@ const { data: conversations, pending, refresh } = await useAsyncData(
 
                 let parsedMessage = message?.toLowerCase()
 
-                if( mess.role === 'user' && parsedMessage?.includes('fine art') || parsedMessage?.includes('fineart') ) {
+                if( isEnabledSearch(parsedMessage, mess.role) ) {
                     disabledSearch.value = false
-                    console.log('disabledSearch.value', disabledSearch.value)
                 }
                 
                 return {
@@ -141,6 +140,9 @@ async function handleSubmit(data: any) {
 
     AIStreaming.value = true
     searchProductKey.value = null
+    const userMessages = data?.message
+
+    console.log('userMessages', userMessages)
 
     addMessage(data)
     let content = data?.message
@@ -214,7 +216,7 @@ async function handleSubmit(data: any) {
         console.log('streamEvent', streamEvent)
 
         if( !isArray(streamEvent) ) {
-            return;
+            continue;
         }
         
         for (let i = 0; i < streamEvent?.length; i++) {
@@ -255,6 +257,11 @@ async function handleSubmit(data: any) {
 
     AIStreaming.value = false
 
+    console.log('route?.params?.id && isEnabledSearch(userMessages)', userMessages, userMessages?.includes('fine art') || userMessages?.includes('fineart'), isEnabledSearch(userMessages))
+    if( route?.params?.id && isEnabledSearch(userMessages) ) {
+        disabledSearch.value = false
+    }
+
     console.log('submit', data);
     if( route.name === 'home'  ) {
         console.log('navigateTo thread', route, thread_id)
@@ -273,6 +280,10 @@ async function handleSubmit(data: any) {
 const isHaveConversations = computed(() => {
     return conversations.value.length > 0;
 })
+
+function isEnabledSearch(message, role ='user') {
+    return role === 'user' && (message?.includes('fine art') || message?.includes('fineart'))
+}
 
 </script>
 

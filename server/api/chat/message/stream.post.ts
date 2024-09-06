@@ -64,8 +64,7 @@ export default defineEventHandler(async (event) => {
         if (_event.data?.delta?.content) {
             const [item] = _event.data?.delta?.content
 
-            const {text} = item
-            const {annotations} = item.text
+            const annotations = item.text?.annotations
             const citations = [];
 
             if (annotations) {
@@ -102,7 +101,7 @@ export default defineEventHandler(async (event) => {
 
             payloadFE.citations = citations;
             payloadFE.files = files;
-            message += payloadFE.data[0].text.value;
+            message += payloadFE?.data?.[0]?.text?.value || '';
 
             // if (annotations) {
             //     console.log(JSON.stringify({
