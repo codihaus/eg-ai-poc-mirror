@@ -3,7 +3,7 @@
         <div class="text-center mx-auto">
             <div class="font-normal text-2xl text-base-900">Discover alternate investments</div>
             <div look="base" tag="p">
-                Learn more about fine arts, movies, music and youtubers
+                Learn more about music industry, fine arts and youtubers
             </div>
         </div>
         <div class="grid grid-cols-3 gap-6 text-base-900 mt-10">
