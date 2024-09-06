@@ -11,12 +11,12 @@
     </ul> -->
     <n-scrollbar>
         <n-collapse class="search-accordion" accordion @item-header-click="clickHeader">
-            <n-collapse-item v-for="productType in listProductTypes" :title="productType?.title" :name="productType?.id" :disabled="loadingKeyword || AIStreaming">
+            <n-collapse-item v-for="productType in listProductTypes" :title="productType?.title" :name="productType?.id" :disabled="loadingKeyword || AIStreaming || disabled">
                 <template #arrow>
                     <div :class="productType?.icon" class="text-xl"></div>
                 </template>
                 <template #header-extra>
-                    <div class="text-xl i-custom-arrow-right text-primary"></div>
+                    <div class="text-xl i-custom-arrow-right text-primary" :class="{'opacity-50': disabled}"></div>
                 </template>
                 <div class="p-4 bg-base-50 rounded-xl">
                     <n-image-group>
@@ -53,6 +53,17 @@
 <script setup lang='ts'>
 import { customEndpoint } from '@directus/sdk'
 import { get } from 'lodash-es'
+
+const props = withDefaults(
+    defineProps<{
+        disabled: boolean
+    }>(),
+    {
+        disabled: true
+    }
+)
+
+const { disabled } = toRefs(props)
 
 const route = useRoute()
 

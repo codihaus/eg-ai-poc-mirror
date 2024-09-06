@@ -12,7 +12,7 @@
             </NScrollbar>
 
             <div :class="isHaveConversations ? 'w-70' : 'w-0'" class="relative overflow-hidden ease duration-500 ">
-                <ContentChatSuggestion class="absolute left-0 top-4 px-4 bottom-0 w-70" />
+                <ContentChatSuggestion :disabled="disabledSearch" class="absolute left-0 top-4 px-4 bottom-0 w-70" />
             </div>
         </div>
 
@@ -40,6 +40,7 @@ const api = useNAD()
 const currentUser = useState('currentUser')
 const AIStreaming = useState('AIStreaming', () => false)
 const searchProductKey = useState('searchProductKey')
+const disabledSearch = ref(true)
 
 const { data: conversations, pending, refresh } = await useAsyncData(
     useId(),
@@ -55,6 +56,10 @@ const { data: conversations, pending, refresh } = await useAsyncData(
             console.log('response', response)
             let allMessage = (response?.messages || [])?.sort((a, b) => a.created_at - b.created_at)?.map((item,index) => ({...item, index}))
             let output = allMessage?.filter((mess) => {
+                if( mess.role === 'user' && get(mess?.content, '0.text.value')?.toLowerCase()?.includes('fine arts') ) {
+                    disabledSearch.value = false
+                    console.log('disabledSearch.value', disabledSearch.value)
+                }
                 return mess.role === 'user'
             })?.map((mess, index) => {
 
@@ -72,6 +77,8 @@ const { data: conversations, pending, refresh } = await useAsyncData(
                 let sources = nextMessage?.role === 'assistant' ? get(allMessage, `${mess?.index+1}.files`)?.map(({file}) =>({
                     name: file.filename
                 })) : []
+
+                
                 
                 return {
                     type: 'text',
@@ -93,10 +100,11 @@ const { data: conversations, pending, refresh } = await useAsyncData(
 )
 
 const lastUserMessage = useState('lastUserMessage')
-
-watch(conversations, () => {
+watch(conversations, (newVal, old) => {
     let userMessages = conversations.value?.filter((message) => message.role === 'user')
     lastUserMessage.value = last(userMessages)?.message
+    // disabledSearch.value = conversations.value?.findIndex((conversation) => conversation?.message?.toLowerCase()?.includes('fine arts')) < 0
+    console.log('disabledSearch.value', disabledSearch.value, newVal, old)
 })
 
 function addMessage(data) {
