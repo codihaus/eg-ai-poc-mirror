@@ -10,7 +10,7 @@
 
     </ul> -->
     <n-scrollbar>
-        <n-collapse class="search-accordion" accordion @item-header-click="clickHeader">
+        <n-collapse class="search-accordion" accordion :expanded-names="expandedSearch" @item-header-click="clickHeader">
             <n-collapse-item v-for="productType in listProductTypes" :title="productType?.title" :name="productType?.id" :disabled="loadingKeyword || AIStreaming || disabled">
                 <template #arrow>
                     <div :class="productType?.icon" class="text-xl"></div>
@@ -56,10 +56,12 @@ import { get } from 'lodash-es'
 
 const props = withDefaults(
     defineProps<{
-        disabled: boolean
+        disabled: boolean,
+        expandedSearch: string | number | null,
     }>(),
     {
-        disabled: true
+        disabled: true,
+        expandedSearch: null
     }
 )
 
@@ -100,6 +102,7 @@ const listProductTypes = [
 const loadingKeyword = ref(false)
 const productType = ref(0)
 const searchProductKey = useState('searchProductKey')
+// const expandedSearch = useState('expandedSearch')
 
 const api = useNAD()
 
@@ -120,6 +123,7 @@ const lastUserMessage = useState('lastUserMessage')
 async function clickHeader({name, expanded, event}) {
 
     console.log('lastUserMessage.value', lastUserMessage.value)
+    console.log('clicked name', name)
 
     loadingKeyword.value = true
     const keyword = searchProductKey.value || await api.request(
@@ -145,6 +149,16 @@ async function clickHeader({name, expanded, event}) {
 
     console.log('keyword', keyword)
 }
+
+watch(() => props.expandedSearch, () => {
+    clickHeader({
+        name: props.expandedSearch,
+        expanded: true,
+        event: null
+    })
+}, {
+    immediate: true
+})
 
 function viewMore(slug) {
     window.location.href = `https://dev.scvengram.com/assets/${slug}?text=${searchProductKey.value}&sort=date_created`

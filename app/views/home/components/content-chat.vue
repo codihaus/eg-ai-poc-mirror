@@ -12,7 +12,7 @@
             </NScrollbar>
 
             <div :class="isHaveConversations ? 'w-70' : 'w-0'" class="relative overflow-hidden ease duration-500 ">
-                <ContentChatSuggestion :disabled="disabledSearch" class="absolute left-0 top-4 px-4 bottom-0 w-70" />
+                <ContentChatSuggestion :disabled="disabledSearch" :expandedSearch="expandedSearch" class="absolute left-0 top-4 px-4 bottom-0 w-70" />
             </div>
         </div>
 
@@ -43,6 +43,8 @@ const searchProductKey = useState('searchProductKey')
 const newData = useState('newThreadData')
 const disabledSearch = ref(true)
 const lastUserMessage = useState('lastUserMessage')
+const expandedSearch = ref()
+// const expandedSearch = useState('expandedSearch')
 
 
 const { data: conversations, pending, refresh } = await useAsyncData(
@@ -84,8 +86,8 @@ const { data: conversations, pending, refresh } = await useAsyncData(
                 let parsedMessage = message?.toLowerCase()
 
                 if( isEnabledSearch(parsedMessage, mess.role) ) {
-                    console.log('chat isEnabledSearch')
                     disabledSearch.value = false
+                    expandedSearch.value = 8
                 }
                 
                 return {
@@ -109,8 +111,8 @@ const { data: conversations, pending, refresh } = await useAsyncData(
 	}
 )
 
-console.log('newData.value', newData.value)
 if( newData.value?.message ) {
+    console.log('newData.value', newData.value)
     addMessage({...newData.value})
     await delay(100)
     lastUserMessage.value = newData.value?.message
@@ -300,11 +302,12 @@ async function stream(content, thread_id) {
 
     AIStreaming.value = false
     newData.value = null
-
+    
     console.log('isEnabledSearch(userMessages)', isEnabledSearch(userMessages))
-
+    
     if( route?.params?.id && isEnabledSearch(userMessages) ) {
         disabledSearch.value = false
+        expandedSearch.value = 8
     }
 }
 
@@ -312,9 +315,14 @@ const isHaveConversations = computed(() => {
     return conversations.value.length > 0;
 })
 
-function isEnabledSearch(message, role ='user') {
+function isEnabledSearch(message = '', role ='user') {
+    message = message?.toLowerCase()
     return role === 'user' && (message?.includes('fine art') || message?.includes('fineart'))
 }
+
+onUnmounted(() => {
+    expandedSearch.value = null
+})
 
 </script>
 
