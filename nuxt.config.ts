@@ -114,6 +114,11 @@ export default defineNuxtConfig({
         prerender: {
             crawlLinks: false,
         },
+        vercel: {
+            functions: {
+                maxDuration: 120
+            }
+        }
     },
     debug: true,
     imports: {
