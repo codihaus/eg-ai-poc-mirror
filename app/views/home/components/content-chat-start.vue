@@ -33,6 +33,9 @@ const suggestions = ref([
     {
         text: 'Youtubers'
     },
+    {
+        text: 'Entertainment'
+    },
 ])
 
 function handleSubmit(data: any) {
