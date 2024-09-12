@@ -25,16 +25,16 @@ const emit = defineEmits<{
 
 const suggestions = ref([
     {
-        text: 'Music industry'
+        text: 'Entertainment'
     },
     {
-        text: 'Fine arts'
+        text: 'Arts'
+    },
+    {
+        text: 'Music'
     },
     {
         text: 'Youtubers'
-    },
-    {
-        text: 'Entertainment'
     },
 ])
 
