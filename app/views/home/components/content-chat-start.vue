@@ -6,7 +6,7 @@
                 Learn more about music industry, fine arts and youtubers
             </div>
         </div>
-        <div class="grid grid-cols-3 gap-6 text-base-900 mt-10">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 text-base-900 mt-10">
             <div v-for="(item) in suggestions" :key="item?.text" class="p-4 bg-white shadow-xl rounded-lg cursor-pointer hover:bg-primary hover:text-white" @click="submitSuggestion(item)">
                 <div class="text-2xl text-center">{{ item?.text }}</div>
                 <div></div>
