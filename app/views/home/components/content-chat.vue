@@ -89,6 +89,10 @@ const { data: conversations, pending, refresh } = await useAsyncData(
                     disabledSearch.value = false
                     expandedSearch.value = 8
                 }
+                if( isEnabledSearch(parsedMessage, mess.role, 'music') ) {
+                    disabledSearch.value = false
+                    expandedSearch.value = 5
+                }
                 
                 return {
                     type: 'text',
@@ -309,15 +313,29 @@ async function stream(content, thread_id) {
         disabledSearch.value = false
         expandedSearch.value = 8
     }
+    if( route?.params?.id && isEnabledSearch(userMessages, 'user', 'music') ) {
+        disabledSearch.value = false
+        expandedSearch.value = 5
+    }
 }
 
 const isHaveConversations = computed(() => {
     return conversations.value.length > 0;
 })
 
-function isEnabledSearch(message = '', role ='user') {
+const keywordsMap = {
+    fineart: ['fine art', 'fineart'],
+    music: ['music']
+}
+
+function isEnabledSearch(message = '', role ='user', key = 'fineart') {
     message = message?.toLowerCase()
-    return role === 'user' && (message?.includes('fine art') || message?.includes('fineart'))
+
+    const keywords = get(keywordsMap, key)
+
+    const isExists = keywords?.filter((k) => message?.includes(k))?.length > 0
+
+    return role === 'user' && isExists
 }
 
 onUnmounted(() => {

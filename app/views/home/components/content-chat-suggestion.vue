@@ -97,6 +97,12 @@ const listProductTypes = [
         slug: 'physical-art',
         icon: 'i-custom-image',
         id: 7
+    },
+    {
+        title: 'Music',
+        slug: 'music',
+        icon: 'i-custom-audio',
+        id: 5
     }
 ]
 const loadingKeyword = ref(false)
