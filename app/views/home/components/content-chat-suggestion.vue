@@ -11,9 +11,9 @@
     </ul> -->
     <n-scrollbar>
         <n-collapse class="search-accordion" accordion :expanded-names="expandedSearch" @item-header-click="clickHeader">
-            <n-collapse-item v-for="productType in listProductTypes" :title="productType?.title" :name="productType?.id" :disabled="loadingKeyword || AIStreaming || disabled">
+            <n-collapse-item v-for="productType in productTypes" :title="productType?.name" :name="productType?.id" :disabled="loadingKeyword || AIStreaming || disabled">
                 <template #arrow>
-                    <div :class="productType?.icon" class="text-xl"></div>
+                    <div v-html="productType?.icon" class="text-xl"></div>
                 </template>
                 <template #header-extra>
                     <div class="text-xl i-custom-arrow-right text-primary" :class="{'opacity-50': disabled}"></div>
@@ -111,6 +111,19 @@ const searchProductKey = useState('searchProductKey')
 // const expandedSearch = useState('expandedSearch')
 
 const api = useNAD()
+
+const { data: productTypes } = await useAsyncData(
+    () =>api.request(customEndpoint({
+        method: 'GET',
+        path: `/eg-resources/product-type`
+    })),
+    {
+        default: () => [],
+        transform: (response) => response,
+    }
+)
+
+console.log('productTypes', productTypes.value)
 
 const { data: products, pending, refresh: searchProducts } = await useAsyncData(
     () => productType.value > 0 && !!searchProductKey.value ? api.request(customEndpoint({
