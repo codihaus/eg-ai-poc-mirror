@@ -17,26 +17,51 @@
 </template>
 
 <script setup lang='ts'>
+import { customEndpoint } from '@directus/sdk'
 import ContentChatStartInput from './content-chat-start-input.vue';
 
 const emit = defineEmits<{
     onSubmit: [any];
 }>();
 
-const suggestions = ref([
+// const suggestions = ref([
+//     {
+//         text: 'Entertainment'
+//     },
+//     {
+//         text: 'Arts'
+//     },
+//     {
+//         text: 'Media'
+//     },
+//     {
+//         text: 'Youtubers'
+//     },
+// ])
+
+const api = useNAD()
+
+const { data: suggestions } = await useAsyncData(
+    'productTypes',
+    () => api.request(customEndpoint({
+        method: 'GET',
+        path: `/eg-resources/product-type`
+    })),
     {
-        text: 'Entertainment'
-    },
-    {
-        text: 'Arts'
-    },
-    {
-        text: 'Music'
-    },
-    {
-        text: 'Youtubers'
-    },
-])
+        default: () => [],
+        transform: (response) => {
+            let output = [
+                ...response?.map((item) => ({
+                    text: item?.name
+                })),
+                {
+                    text: 'Youtubers'
+                },
+            ]
+            return output
+        },
+    }
+)
 
 function handleSubmit(data: any) {
     // console.log('submit', data);

@@ -113,6 +113,7 @@ const searchProductKey = useState('searchProductKey')
 const api = useNAD()
 
 const { data: productTypes } = await useAsyncData(
+    'productTypes',
     () =>api.request(customEndpoint({
         method: 'GET',
         path: `/eg-resources/product-type`
@@ -143,24 +144,30 @@ async function clickHeader({name, expanded, event}) {
 
     console.log('lastUserMessage.value', lastUserMessage.value)
     console.log('clicked name', name)
-
+    
     loadingKeyword.value = true
-    const keyword = searchProductKey.value || await api.request(
-        customEndpoint({
-            method: 'POST',
-            path: `/chat/message/`,
-            body: JSON.stringify({
-                thread_id: getThreadID(route?.params?.id),
-                role: 'assistant',
-                type: 'search',
-                content: lastUserMessage.value
+    let keyword = searchProductKey.value
+    
+    console.log('searchProductKey.value', searchProductKey.value)
+    
+    if( ! keyword && lastUserMessage.value ) {
+        keyword = await api.request(
+            customEndpoint({
+                method: 'POST',
+                path: `/chat/message/`,
+                body: JSON.stringify({
+                    thread_id: getThreadID(route?.params?.id),
+                    role: 'assistant',
+                    type: 'search',
+                    content: lastUserMessage.value
+                })
             })
+        ).then((res) => get(res.reply, '0.text.value')).catch(() => {
+            return false
+        }).finally(() => {
+            loadingKeyword.value = false
         })
-    ).then((res) => get(res.reply, '0.text.value')).catch(() => {
-        return false
-    }).finally(() => {
-        loadingKeyword.value = false
-    })
+    }
 
     loadingKeyword.value = false
     productType.value = name

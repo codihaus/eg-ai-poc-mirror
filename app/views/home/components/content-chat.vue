@@ -89,9 +89,9 @@ const { data: conversations, pending, refresh } = await useAsyncData(
                     disabledSearch.value = false
                     expandedSearch.value = 8
                 }
-                if( isEnabledSearch(parsedMessage, mess.role, 'music') ) {
+                if( isEnabledSearch(parsedMessage, mess.role, 'media') ) {
                     disabledSearch.value = false
-                    expandedSearch.value = 5
+                    expandedSearch.value = 3
                 }
                 
                 return {
@@ -105,6 +105,8 @@ const { data: conversations, pending, refresh } = await useAsyncData(
             })
 
             lastUserMessage.value = last(output)?.message
+
+            console.log('lastUserMessage.value = last(output)?.message', lastUserMessage.value)
             
             if( route.params?.id && route.params?.id !== '+' ) {
                 return output?.length ? output : []
@@ -313,9 +315,9 @@ async function stream(content, thread_id) {
         disabledSearch.value = false
         expandedSearch.value = 8
     }
-    if( route?.params?.id && isEnabledSearch(userMessages, 'user', 'music') ) {
+    if( route?.params?.id && isEnabledSearch(userMessages, 'user', 'media') ) {
         disabledSearch.value = false
-        expandedSearch.value = 5
+        expandedSearch.value = 3
     }
 }
 
@@ -325,7 +327,8 @@ const isHaveConversations = computed(() => {
 
 const keywordsMap = {
     fineart: ['fine art', 'fineart'],
-    music: ['music']
+    music: ['music'],
+    media: ['media']
 }
 
 function isEnabledSearch(message = '', role ='user', key = 'fineart') {
