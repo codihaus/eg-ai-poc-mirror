@@ -41,7 +41,7 @@ const emit = defineEmits<{
 
 const api = useNAD()
 
-const { data: suggestions } = await useAsyncData(
+const { data: productTypes } = await useAsyncData(
     'productTypes',
     () => api.request(customEndpoint({
         method: 'GET',
@@ -49,19 +49,23 @@ const { data: suggestions } = await useAsyncData(
     })),
     {
         default: () => [],
-        transform: (response) => {
-            let output = [
-                ...response?.map((item) => ({
-                    text: item?.name
-                })),
-                {
-                    text: 'Youtubers'
-                },
-            ]
-            return output
-        },
+        transform: (response) => response,
     }
 )
+
+const suggestions = computed(() => {
+    let output = [
+        ...productTypes.value?.map((item) => ({
+            text: item?.name
+        })),
+        {
+            text: 'Youtubers'
+        },
+    ]
+    return output
+})
+
+console.log('suggestions', suggestions.value)
 
 function handleSubmit(data: any) {
     // console.log('submit', data);
