@@ -85,14 +85,15 @@ const { data: conversations, pending, refresh } = await useAsyncData(
 
                 let parsedMessage = message?.toLowerCase()
 
-                if( isEnabledSearch(parsedMessage, mess.role) ) {
-                    disabledSearch.value = false
-                    expandedSearch.value = 8
-                }
-                if( isEnabledSearch(parsedMessage, mess.role, 'media') ) {
-                    disabledSearch.value = false
-                    expandedSearch.value = 3
-                }
+                disabledSearch.value = false
+                // if( isEnabledSearch(parsedMessage, mess.role) ) {
+                //     disabledSearch.value = false
+                //     expandedSearch.value = 8
+                // }
+                // if( isEnabledSearch(parsedMessage, mess.role, 'media') ) {
+                //     disabledSearch.value = false
+                //     expandedSearch.value = 3
+                // }
                 
                 return {
                     type: 'text',
@@ -126,7 +127,7 @@ if( newData.value?.message ) {
 }
 
 function addMessage(data) {
-    console.log(data)
+    // console.log(data)
     let lastMessage = last(conversations.value)
     let lastMessageIndex = conversations.value?.length - 1
 
@@ -166,6 +167,11 @@ async function handleSubmit(data: any) {
     addMessage(data)
     let content = data?.message
 
+    if( data?.id ) {
+        expandedSearch.value = data?.id
+        console.log('data?.id', data?.id, expandedSearch.value)
+    }
+
     let thread_id = getThreadID(route?.params?.id)
 
     if( route.name === 'home' && ! route?.params?.id ) {
@@ -174,7 +180,8 @@ async function handleSubmit(data: any) {
             method: 'POST',
             path: '/chat/thread',
             body: JSON.stringify({
-                title: data?.message || 'New Request'
+                title: data?.message || 'New Request',
+                product_type: data?.id || null
             })
         }))
         console.log('createdThread', createdThread)
@@ -258,11 +265,11 @@ async function stream(content, thread_id) {
             break;
         }
         
-        console.log('streamEvent fileURL', streamEvent)
+        // console.log('streamEvent fileURL', streamEvent)
 
         streamEvent = destr(streamEvent)
 
-        console.log('streamEvent', streamEvent)
+        // console.log('streamEvent', streamEvent)
 
         if( !isArray(streamEvent) ) {
             continue;
@@ -273,7 +280,7 @@ async function stream(content, thread_id) {
             let data = get(streamEvent[i], 'data')
             let files = get(streamEvent[i], 'files')
 
-            console.log('files', files)
+            // console.log('files', files)
 
             if(event === 'thread.run.failed') {
                 addMessage({
@@ -309,16 +316,16 @@ async function stream(content, thread_id) {
     AIStreaming.value = false
     newData.value = null
     
-    console.log('isEnabledSearch(userMessages)', isEnabledSearch(userMessages))
+    // console.log('isEnabledSearch(userMessages)', isEnabledSearch(userMessages))
     
-    if( route?.params?.id && isEnabledSearch(userMessages) ) {
-        disabledSearch.value = false
-        expandedSearch.value = 8
-    }
-    if( route?.params?.id && isEnabledSearch(userMessages, 'user', 'media') ) {
-        disabledSearch.value = false
-        expandedSearch.value = 3
-    }
+    disabledSearch.value = false
+    // if( route?.params?.id && isEnabledSearch(userMessages) ) {
+    //     expandedSearch.value = 8
+    // }
+    // if( route?.params?.id && isEnabledSearch(userMessages, 'user', 'media') ) {
+    //     disabledSearch.value = false
+    //     expandedSearch.value = 3
+    // }
 }
 
 const isHaveConversations = computed(() => {
@@ -342,7 +349,7 @@ function isEnabledSearch(message = '', role ='user', key = 'fineart') {
 }
 
 onUnmounted(() => {
-    expandedSearch.value = null
+    // expandedSearch.value = false
 })
 
 </script>

@@ -17,7 +17,8 @@ export default defineEventHandler(async (event) => {
             {
                 thread_id: thread.id,
                 assistant_id: process.env.OPENAI_ASSISTANT_ID,
-                title: body?.title || ''
+                title: body?.title || '',
+                product_type: body?.product_type || null
             }
         )
     )

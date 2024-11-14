@@ -86,10 +86,15 @@ const { data: recentThreads, refresh } = await useAsyncData('recentThreads', () 
         console.log('res', response)
         return response?.map((item) => ({
             title: item?.title,
-            link: `/thread/${getThreadParamID(item?.thread_id)}`
+            link: `/thread/${getThreadParamID(item?.thread_id)}`,
+            product_type: item?.product_type
         }))
     }
 })
+
+const recentThreadState = useState('recentThreads')
+
+recentThreadState.value = recentThreads.value
 </script>
 
 <style scoped>

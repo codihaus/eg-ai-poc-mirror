@@ -56,10 +56,11 @@ const { data: productTypes } = await useAsyncData(
 const suggestions = computed(() => {
     let output = [
         ...productTypes.value?.map((item) => ({
-            text: item?.name
+            text: item?.name,
+            id: item?.id
         })),
         {
-            text: 'Youtubers'
+            text: 'Youtubers',
         },
     ]
     return output
@@ -74,7 +75,8 @@ function handleSubmit(data: any) {
 
 function submitSuggestion(item) {
     emit('onSubmit', {
-        message: `Tell me more about the ${item?.text} and what returns can i expect`
+        message: `Tell me more about the ${item?.text} and what returns can i expect`,
+        id: item?.id
     });
 }
 </script>

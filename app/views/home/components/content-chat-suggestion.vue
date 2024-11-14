@@ -10,13 +10,13 @@
 
     </ul> -->
     <n-scrollbar>
-        <n-collapse class="search-accordion" accordion :expanded-names="expandedSearch" @item-header-click="clickHeader">
+        <n-collapse class="search-accordion" accordion :default-expanded-names="expandedSearch" @item-header-click="clickHeader">
             <n-collapse-item v-for="productType in productTypes" :title="productType?.name" :name="productType?.id" :disabled="loadingKeyword || AIStreaming || disabled">
                 <template #arrow>
-                    <div v-html="productType?.icon" class="text-xl"></div>
+                    <div ref="triggerRef" v-html="productType?.icon" class="icon-suggestion text-xl"></div>
                 </template>
                 <template #header-extra>
-                    <div class="text-xl i-custom-arrow-right text-primary" :class="{'opacity-50': disabled}"></div>
+                    <div class="text-xl i-custom-arrow-right text-primary" :class="{'opacity-50': loadingKeyword || AIStreaming || disabled}"></div>
                 </template>
                 <div class="p-4 bg-base-50 rounded-xl">
                     <n-image-group>
@@ -65,7 +65,7 @@ const props = withDefaults(
     }
 )
 
-const { disabled } = toRefs(props)
+const { disabled, expandedSearch } = toRefs(props)
 
 const route = useRoute()
 
@@ -107,6 +107,7 @@ const listProductTypes = [
 ]
 const loadingKeyword = ref(false)
 const productType = ref(0)
+const triggerRef = ref()
 const searchProductKey = useState('searchProductKey')
 // const expandedSearch = useState('expandedSearch')
 
@@ -143,12 +144,14 @@ const lastUserMessage = useState('lastUserMessage')
 async function clickHeader({name, expanded, event}) {
 
     console.log('lastUserMessage.value', lastUserMessage.value)
-    console.log('clicked name', name)
+    console.log('clicked name', name, expandedSearch.value)
+
+    // expandedSearch.value = name
     
     loadingKeyword.value = true
     let keyword = searchProductKey.value
     
-    console.log('searchProductKey.value', searchProductKey.value)
+    console.log('keyword', keyword, searchProductKey.value)
     
     if( ! keyword && lastUserMessage.value ) {
         keyword = await api.request(
@@ -176,12 +179,18 @@ async function clickHeader({name, expanded, event}) {
     console.log('keyword', keyword)
 }
 
-watch(() => props.expandedSearch, () => {
-    clickHeader({
-        name: props.expandedSearch,
-        expanded: true,
-        event: null
-    })
+// expandedSearch.value = expandedSearch.value || get(productTypes.value, '0.id')
+
+watch(() => expandedSearch.value, () => {
+    console.log('change expandedSearch', expandedSearch.value)
+    if( ! AIStreaming.value ) {
+        clickHeader({
+            name: expandedSearch.value || get(productTypes.value, '0.id'),
+            expanded: true,
+            event: null
+        })
+
+    }
 }, {
     immediate: true
 })
@@ -190,6 +199,10 @@ function viewMore(slug) {
     window.location.href = `https://dev.scvengram.com/assets/${slug}?text=${searchProductKey.value}&sort=date_created`
 }
 
+
+const recentThreads = useState('recentThreads')
+
+console.log('suggestions recentThreads', recentThreads.value)
 </script>
 <style lang="scss">
 .n-collapse.search-accordion {
@@ -213,6 +226,13 @@ function viewMore(slug) {
     }
     .n-collapse-item:first-child > .n-collapse-item__header {
         // padding-top: 8px;
+    }
+}
+
+.icon-suggestion {
+    svg {
+        width: 1em;
+        height: 1em;
     }
 }
 </style>
