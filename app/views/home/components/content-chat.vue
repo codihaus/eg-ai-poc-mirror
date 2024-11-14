@@ -167,6 +167,10 @@ async function handleSubmit(data: any) {
     addMessage(data)
     let content = data?.message
 
+    if( data?.id ) {
+        expandedSearch.value = data?.id
+        console.log('data?.id', data?.id, expandedSearch.value)
+    }
     
 
     let thread_id = getThreadID(route?.params?.id)
@@ -211,10 +215,7 @@ async function handleSubmit(data: any) {
     await stream(userMessages, thread_id)
 
     console.log('submit', data);
-    if( data?.id ) {
-        expandedSearch.value = data?.id
-        console.log('data?.id', data?.id, expandedSearch.value)
-    }
+    
     
 }
 

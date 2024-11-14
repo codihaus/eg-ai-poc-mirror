@@ -10,7 +10,7 @@
 
     </ul> -->
     <n-scrollbar>
-        <n-collapse class="search-accordion" accordion :default-expanded-names="expandedSearch" @item-header-click="clickHeader">
+        <n-collapse class="search-accordion" accordion :default-expanded-names="expandedSearch || get(productTypes, '0.id')" @item-header-click="clickHeader">
             <n-collapse-item v-for="productType in productTypes" :title="productType?.name" :name="productType?.id" :disabled="loadingKeyword || AIStreaming || disabled">
                 <template #arrow>
                     <div ref="triggerRef" v-html="productType?.icon" class="icon-suggestion text-xl"></div>
@@ -179,18 +179,15 @@ async function clickHeader({name, expanded, event}) {
     console.log('keyword', keyword)
 }
 
-expandedSearch.value = expandedSearch.value || get(productTypes.value, '0.id')
+
 
 watch(() => expandedSearch.value, () => {
     console.log('change expandedSearch', expandedSearch.value)
-    if( ! AIStreaming.value ) {
-        clickHeader({
-            name: expandedSearch.value || get(productTypes.value, '0.id'),
-            expanded: true,
-            event: null
-        })
-
-    }
+    clickHeader({
+        name: expandedSearch.value || get(productTypes.value, '0.id'),
+        expanded: true,
+        event: null
+    })
 }, {
     immediate: true
 })
@@ -198,6 +195,10 @@ watch(() => expandedSearch.value, () => {
 function viewMore(slug) {
     window.location.href = `https://dev.scvengram.com/assets/${slug}?text=${searchProductKey.value}&sort=date_created`
 }
+
+onMounted(() => {
+    expandedSearch.value = expandedSearch.value || get(productTypes.value, '0.id')
+})
 
 </script>
 <style lang="scss">
