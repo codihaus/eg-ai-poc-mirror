@@ -57,15 +57,15 @@ import { get } from 'lodash-es'
 const props = withDefaults(
     defineProps<{
         disabled: boolean,
-        expandedSearch: string | number | null,
+        // expandedSearch: string | number | null,
     }>(),
     {
         disabled: true,
-        expandedSearch: null
+        // expandedSearch: null
     }
 )
 
-const { disabled, expandedSearch } = toRefs(props)
+const { disabled } = toRefs(props)
 
 const route = useRoute()
 
@@ -109,7 +109,7 @@ const loadingKeyword = ref(false)
 const productType = ref(0)
 const triggerRef = ref()
 const searchProductKey = useState('searchProductKey')
-// const expandedSearch = useState('expandedSearch')
+const expandedSearch = useState('expandedSearch')
 
 const api = useNAD()
 
@@ -179,7 +179,7 @@ async function clickHeader({name, expanded, event}) {
     console.log('keyword', keyword)
 }
 
-// expandedSearch.value = expandedSearch.value || get(productTypes.value, '0.id')
+expandedSearch.value = expandedSearch.value || get(productTypes.value, '0.id')
 
 watch(() => expandedSearch.value, () => {
     console.log('change expandedSearch', expandedSearch.value)
@@ -199,10 +199,6 @@ function viewMore(slug) {
     window.location.href = `https://dev.scvengram.com/assets/${slug}?text=${searchProductKey.value}&sort=date_created`
 }
 
-
-const recentThreads = useState('recentThreads')
-
-console.log('suggestions recentThreads', recentThreads.value)
 </script>
 <style lang="scss">
 .n-collapse.search-accordion {

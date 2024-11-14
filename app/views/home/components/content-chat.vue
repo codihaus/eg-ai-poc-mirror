@@ -12,7 +12,7 @@
             </NScrollbar>
 
             <div :class="isHaveConversations ? 'w-70' : 'w-0'" class="relative overflow-hidden ease duration-500 ">
-                <ContentChatSuggestion :disabled="disabledSearch" :expandedSearch="expandedSearch" class="absolute left-0 top-4 px-4 bottom-0 w-70" />
+                <ContentChatSuggestion :disabled="disabledSearch" class="absolute left-0 top-4 px-4 bottom-0 w-70" />
             </div>
         </div>
 
@@ -43,8 +43,8 @@ const searchProductKey = useState('searchProductKey')
 const newData = useState('newThreadData')
 const disabledSearch = ref(true)
 const lastUserMessage = useState('lastUserMessage')
-const expandedSearch = ref()
-// const expandedSearch = useState('expandedSearch')
+// const expandedSearch = ref()
+const expandedSearch = useState('expandedSearch')
 
 
 const { data: conversations, pending, refresh } = await useAsyncData(
