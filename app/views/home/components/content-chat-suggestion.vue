@@ -154,7 +154,7 @@ async function clickHeader({name, expanded, event}) {
     console.log('keyword', keyword, searchProductKey.value)
     
     if( ! keyword && lastUserMessage.value ) {
-        keyword = await api.request(
+        const {data, refresh: getKeyWord} = await useAsyncData(() => !AIStreaming.value ? api.request(
             customEndpoint({
                 method: 'POST',
                 path: `/chat/message/`,
@@ -165,11 +165,16 @@ async function clickHeader({name, expanded, event}) {
                     content: lastUserMessage.value
                 })
             })
-        ).then((res) => get(res.reply, '0.text.value')).catch(() => {
-            return false
-        }).finally(() => {
-            loadingKeyword.value = false
+        )  : {}, {
+            transform: (response) => {
+                keyword = get(response, 'reply.0.text.value')
+                productType.value = name
+                searchProductKey.value = keyword
+                return keyword
+            },
+            watch: [AIStreaming]
         })
+        loadingKeyword.value = false
     }
 
     loadingKeyword.value = false
